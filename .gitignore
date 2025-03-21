@@ -1,33 +1,40 @@
-HELP.md
+# --- GLOBAL ---
+.DS_Store
+Thumbs.db
+
+# --- LOGS ---
+*.log
+
+# --- JAVA / SPRING BOOT BACKEND ---
 target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
-
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
-.idea
-*.iws
+*.class
+*.jar
+*.war
 *.iml
 *.ipr
+*.iws
+*.idea/
+*.project
+*.classpath
+.apt_generated/
+.factorypath/
+.springBeans/
+sts4-cache/
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+# --- MAVEN ---
+.mvn/
+mvnw
+mvnw.cmd
+
+# --- REACT FRONTEND ---
+node_modules/
 build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+.env
+.env.local
 
-### VS Code ###
+# --- VSCODE ---
 .vscode/
+
+# --- OS Specific ---
+*.swp
+
