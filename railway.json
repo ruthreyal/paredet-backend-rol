@@ -1,9 +1,10 @@
 {
-  "build": {
-    "builder": "docker",
-    "buildCommand": null,
-    "startCommand": null,
-    "dockerfilePath": "backend/Dockerfile",
-    "context": "backend"
-  }
+  "services": [
+    {
+      "name": "backend",
+      "sourceDir": "backend",
+      "dockerfilePath": "backend/Dockerfile"
+    }
+  ]
 }
+
