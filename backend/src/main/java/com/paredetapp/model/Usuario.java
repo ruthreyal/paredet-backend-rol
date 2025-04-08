@@ -1,6 +1,6 @@
 package com.paredetapp.model;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.Data;
 import java.util.UUID;
 
@@ -19,7 +19,7 @@ public class Usuario {
     private String email;
 
     @Column(nullable = false)
-    private String contraseña;
+    private String password;
 
     @Column(unique = true, nullable = false)
     private String telefono;
@@ -33,6 +33,7 @@ public class Usuario {
     private Rol rol;
 
     public enum Rol {
-        ADMIN, USUARIO
+        ADMIN, USER
     }
 }
+

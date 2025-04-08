@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/direcciones")
+@RequestMapping("/api/direcciones")
 public class DireccionController {
 
     @Autowired
