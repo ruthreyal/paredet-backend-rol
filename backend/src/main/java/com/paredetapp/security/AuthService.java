@@ -25,17 +25,19 @@ public class AuthService {
         try {
             System.out.println("📥 Registrando nuevo usuario: " + request.getEmail());
             request.setPassword(passwordEncoder.encode(request.getPassword()));
-            request.setRol(Rol.USER);
+
+            // Si no viene rol en la petición, se pone por defecto USER
+            if (request.getRol() == null) {
+                request.setRol(Rol.USER);
+            }
+
             usuarioRepository.save(request);
 
-            // 🔧 Obtener UserDetails para generar el token
             UserDetails userDetails = userDetailsService.loadUserByUsername(request.getEmail());
             String token = jwtService.generateToken(userDetails);
 
-            System.out.println("🔐 Token generado para: " + request.getEmail());
             return token;
         } catch (Exception e) {
-            System.out.println("❌ Error en el registro: " + e.getMessage());
             throw e;
         }
     }

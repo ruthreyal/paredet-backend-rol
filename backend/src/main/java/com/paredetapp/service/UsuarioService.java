@@ -29,4 +29,9 @@ public class UsuarioService {
     public void eliminarUsuario(UUID id) {
         usuarioRepository.deleteById(id);
     }
+
+    public Optional<Usuario> obtenerPorEmail(String email) {
+        return usuarioRepository.findByEmail(email);
+    }
+
 }

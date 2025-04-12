@@ -2,6 +2,7 @@ package com.paredetapp.service;
 
 import com.paredetapp.model.Direccion;
 import com.paredetapp.repository.DireccionRepository;
+import com.paredetapp.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,19 @@ import java.util.UUID;
 public class DireccionService {
 
     @Autowired
+    private UsuarioRepository usuarioRepository;
+
+
+    @Autowired
     private DireccionRepository direccionRepository;
+
+    public boolean esPropietario(UUID direccionId, String emailUsuario) {
+        return direccionRepository.findById(direccionId)
+                .map(d -> d.getUsuario().getEmail().equals(emailUsuario))
+                .orElse(false);
+    }
+
+
 
     public List<Direccion> obtenerTodas() {
         return direccionRepository.findAll();

@@ -26,6 +26,13 @@ public class PedidoService {
         return pedidoRepository.save(pedido);
     }
 
+    public boolean esPropietario(UUID pedidoId, String emailUsuario) {
+        return pedidoRepository.findById(pedidoId)
+                .map(p -> p.getUsuario().getEmail().equalsIgnoreCase(emailUsuario))
+                .orElse(false);
+    }
+
+
     public void eliminarPedido(UUID id) {
         pedidoRepository.deleteById(id);
     }
