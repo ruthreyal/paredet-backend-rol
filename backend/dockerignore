@@ -1,0 +1,12 @@
+# Ignorar archivos y carpetas innecesarias
+frontend/
+dockerfile/
+node_modules/
+target/
+.git/
+.gitignore
+README.md
+*.iml
+.idea/
+*.log
+.env
