@@ -1,4 +1,4 @@
-package com.paredetapp.ParedetApp;
+package com.paredetapp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
