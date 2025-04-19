@@ -1,0 +1,71 @@
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: stretch; /* Esto asegura que los hijos se estiren igual */
+    gap: 2rem;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+    margin-bottom: 3rem;
+  }
+  
+  .login-box {
+    flex: 1 1 350px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: 1px solid #ccc;
+    background-color: white;
+    padding: 2rem;
+    border-radius: 4px;
+    height: auto; /* Permite que ambos se ajusten al más alto */
+  }
+  
+  .login-box h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .login-box p {
+    font-size: 0.95rem;
+    color: #444;
+    margin-bottom: 1.5rem;
+  }
+  
+  .login-box .btn {
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 0.75rem;
+  }
+  
+  .forgot-password {
+    color: #000;
+    font-weight: 500;
+    margin-top: 0.5rem;
+    display: inline-block;
+  }
+  
+  /* Estilo botón dorado reutilizable */
+  .btn-gold {
+    background-color: #D4AF37;
+    color: white;
+    border: none;
+    font-weight: 500;
+  }
+  
+  .btn-gold:hover {
+    background-color: #c49c2b;
+    color: white;
+  }
+  
+  /* Asegura que el botón de crear cuenta se quede abajo y ocupe el ancho */
+  .crear-cuenta-boton {
+    margin-top: auto;
+    width: 100%;
+  }
+  
+  
+  
+  
+  
+  
+  
