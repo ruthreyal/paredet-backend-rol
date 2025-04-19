@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import "../styles/index.css";
+import { AuthContext } from "../context/AuthContext";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { usuario, logout } = useContext(AuthContext);
   const toggleMenu = () => setIsOpen(!isOpen);
 
   return (
@@ -25,14 +27,29 @@ const Navbar = () => {
           </li>
         </ul>
         <ul className="navbar-nav align-items-center gap-3 ms-3">
-          <li className="nav-item">
-            <Link className="nav-link" to="#"><i className="bi bi-search"></i></Link>
-          </li>
-          <li className="nav-item">
-            <Link className="nav-link" to="/login"><i className="bi bi-person"></i></Link>
-          </li>
+          {usuario ? (
+            <li className="nav-item dropdown">
+              <div className="d-flex align-items-center">
+                <Link className="nav-link dropdown-toggle" to="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i className="bi bi-person"></i> <span className="ms-1">¡Hola, {usuario.nombre}!</span>
+                </Link>
+                <ul className="dropdown-menu dropdown-menu-end">
+                  <li><Link className="dropdown-item" to="/perfil">Mi perfil</Link></li>
+                  <li><Link className="dropdown-item" to="#">Mis pedidos</Link></li>
+                  <li><button className="dropdown-item" onClick={logout}>Cerrar sesión</button></li>
+                </ul>
+              </div>
+            </li>
+          ) : (
+            <li className="nav-item">
+              <Link className="nav-link" to="/login"><i className="bi bi-person"></i></Link>
+            </li>
+          )}
           <li className="nav-item">
             <Link className="nav-link" to="#"><i className="bi bi-cart"></i></Link>
+          </li>
+          <li className="nav-item">
+            <Link className="nav-link" to="#"><i className="bi bi-search"></i></Link>
           </li>
         </ul>
       </nav>
@@ -59,10 +76,10 @@ const Navbar = () => {
       {/* MENÚ DESPLEGABLE */}
       <div className={`mobile-menu ${isOpen ? "show" : ""}`}>
         <ul className="navbar-nav px-4 pt-3">
-        <li className="nav-item mb-3 d-flex justify-content-end gap-4">
-          <Link to="#" className="nav-link p-0 text-white"><i className="bi bi-person fs-5"></i></Link>
-          <Link to="#" className="nav-link p-0 text-white"><i className="bi bi-cart fs-5"></i></Link>
-        </li>
+          <li className="nav-item mb-3 d-flex justify-content-end gap-4">
+            <Link to="#" className="nav-link p-0 text-white"><i className="bi bi-person fs-5"></i></Link>
+            <Link to="#" className="nav-link p-0 text-white"><i className="bi bi-cart fs-5"></i></Link>
+          </li>
           <li className="nav-item mb-2">
             <Link className="nav-link text-white" to="#" onClick={toggleMenu}>Papeles Pintados</Link>
           </li>
@@ -87,6 +104,9 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+
+
 
 
 

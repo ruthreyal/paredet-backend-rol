@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://backend-production-cfd6.up.railway.app/api/usuarios';
+const API_URL = 'http://localhost:8080/api/usuarios'; // 🔄 LOCAL
 
 const getUsuarioPorEmail = async (email, token) => {
   const response = await axios.get(`${API_URL}/email/${email}`, {
@@ -16,3 +16,4 @@ const usuarioService = {
 };
 
 export default usuarioService;
+

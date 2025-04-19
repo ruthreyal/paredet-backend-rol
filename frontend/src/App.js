@@ -5,30 +5,34 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
 import Login from './pages/Login';
-import Registro from "./pages/Registro";
-<Route path="/registro" element={<Registro />} />
-
+import Registro from './pages/Registro';
+import PerfilPage from './pages/PerfilPage';
+import AuthProvider from './context/AuthContext';
 
 function App() {
   return (
-    <Router>
-      <div className="d-flex flex-column min-vh-100">
-        <Header />
-        <Navbar />
-        <main className="flex-grow-1">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/registro" element={<Registro />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <div className="d-flex flex-column min-vh-100">
+          <Header />
+          <Navbar />
+          <main className="flex-grow-1">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/registro" element={<Registro />} />
+              <Route path="/perfil" element={<PerfilPage />} />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
+      </Router>
+    </AuthProvider>
   );
 }
 
 export default App;
+
 
 
 
