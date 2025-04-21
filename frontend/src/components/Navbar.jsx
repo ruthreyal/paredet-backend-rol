@@ -5,8 +5,17 @@ import { AuthContext } from "../context/AuthContext";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { usuario, logout } = useContext(AuthContext);
+  const { usuario, setUsuario } = useContext(AuthContext);
   const toggleMenu = () => setIsOpen(!isOpen);
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("email");
+    setUsuario(null);
+    window.location.href = "/";
+  };
+
+  console.log("Usuario en Navbar:", usuario);
 
   return (
     <>
@@ -30,8 +39,15 @@ const Navbar = () => {
           {usuario ? (
             <li className="nav-item dropdown">
               <div className="d-flex align-items-center">
-                <Link className="nav-link dropdown-toggle" to="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  <i className="bi bi-person"></i> <span className="ms-1">¡Hola, {usuario.nombre}!</span>
+                <Link
+                  className="nav-link dropdown-toggle"
+                  to="#"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <i className="bi bi-person"></i>{" "}
+                  <span className="ms-1">¡Hola, {usuario.nombre}!</span>
                 </Link>
                 <ul className="dropdown-menu dropdown-menu-end">
                   <li><Link className="dropdown-item" to="/perfil">Mi perfil</Link></li>
@@ -104,6 +120,9 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
+
+
 
 
 
