@@ -52,6 +52,26 @@ public class UsuarioController {
     public void eliminarUsuario(@PathVariable UUID id) {
         usuarioService.eliminarUsuario(id);
     }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or #id.toString() == authentication.principal.username")
+    public Usuario actualizarUsuario(@PathVariable UUID id, @RequestBody Usuario usuarioActualizado) {
+        Optional<Usuario> usuarioOptional = usuarioService.obtenerPorId(id);
+        if (usuarioOptional.isPresent()) {
+            Usuario usuarioExistente = usuarioOptional.get();
+            usuarioExistente.setNombre(usuarioActualizado.getNombre());
+            usuarioExistente.setApellido(usuarioActualizado.getApellido());
+            usuarioExistente.setTelefono(usuarioActualizado.getTelefono());
+            usuarioExistente.setDireccion(usuarioActualizado.getDireccion());
+            usuarioExistente.setCiudad(usuarioActualizado.getCiudad());
+            usuarioExistente.setPais(usuarioActualizado.getPais());
+            usuarioExistente.setCodigoPostal(usuarioActualizado.getCodigoPostal());
+            return usuarioService.guardarUsuario(usuarioExistente);
+        } else {
+            throw new RuntimeException("Usuario no encontrado");
+        }
+    }
+
 }
 
 
