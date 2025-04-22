@@ -2,6 +2,7 @@ package com.paredetapp.service;
 
 import com.paredetapp.model.Coleccion;
 import com.paredetapp.repository.ColeccionRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,10 +11,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class ColeccionService {
 
-    @Autowired
-    private ColeccionRepository coleccionRepository;
+    private final ColeccionRepository coleccionRepository;
 
     public List<Coleccion> obtenerTodas() {
         return coleccionRepository.findAll();

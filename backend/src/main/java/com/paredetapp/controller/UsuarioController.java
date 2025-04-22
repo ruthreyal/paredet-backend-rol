@@ -17,60 +17,57 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
-    // ✅ Solo ADMIN puede listar todos los usuarios
+    /**
+     * Solo el ADMIN puede ver la lista completa de usuarios.
+     */
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public List<Usuario> listarUsuarios() {
         return usuarioService.obtenerTodos();
     }
 
-    // ✅ ADMIN o el propio usuario pueden acceder a sus datos
+    /**
+     * Permite al ADMIN o al propio usuario acceder a sus datos.
+     */
     @PreAuthorize("hasRole('ADMIN') or #id.toString() == authentication.principal.username")
     @GetMapping("/{id}")
     public Optional<Usuario> obtenerUsuario(@PathVariable UUID id) {
         return usuarioService.obtenerPorId(id);
     }
 
-    // ✅ ADMIN o el propio usuario pueden acceder por email
+    /**
+     * Permite al ADMIN o al propio usuario acceder a sus datos por email.
+     */
     @PreAuthorize("hasRole('ADMIN') or #email == authentication.principal.username")
     @GetMapping("/email/{email}")
     public Optional<Usuario> obtenerUsuarioPorEmail(@PathVariable String email) {
         return usuarioService.obtenerPorEmail(email);
     }
 
-    // ✅ Solo ADMIN puede crear usuarios
+    /**
+     * Solo el ADMIN puede crear nuevos usuarios con rol personalizado.
+     */
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public Usuario crearUsuario(@RequestBody Usuario usuario) {
         return usuarioService.guardarUsuario(usuario);
     }
 
-    // ✅ Solo ADMIN puede eliminar usuarios
+    /**
+     * Solo el ADMIN o el propio usuario pueden actualizar sus datos.
+     */
+    @PreAuthorize("hasRole('ADMIN') or #id.toString() == authentication.principal.username")
+    @PutMapping("/{id}")
+    public Usuario actualizarUsuario(@PathVariable UUID id, @RequestBody Usuario usuarioActualizado) {
+        return usuarioService.actualizarUsuario(id, usuarioActualizado);
+    }
+
+    /**
+     * Solo el ADMIN puede eliminar usuarios.
+     */
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public void eliminarUsuario(@PathVariable UUID id) {
         usuarioService.eliminarUsuario(id);
     }
-
-    @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN') or #id.toString() == authentication.principal.username")
-    public Usuario actualizarUsuario(@PathVariable UUID id, @RequestBody Usuario usuarioActualizado) {
-        Optional<Usuario> usuarioOptional = usuarioService.obtenerPorId(id);
-        if (usuarioOptional.isPresent()) {
-            Usuario usuarioExistente = usuarioOptional.get();
-            usuarioExistente.setNombre(usuarioActualizado.getNombre());
-            usuarioExistente.setApellido(usuarioActualizado.getApellido());
-            usuarioExistente.setTelefono(usuarioActualizado.getTelefono());
-            usuarioExistente.setDireccion(usuarioActualizado.getDireccion());
-            usuarioExistente.setCiudad(usuarioActualizado.getCiudad());
-            usuarioExistente.setPais(usuarioActualizado.getPais());
-            usuarioExistente.setCodigoPostal(usuarioActualizado.getCodigoPostal());
-            return usuarioService.guardarUsuario(usuarioExistente);
-        } else {
-            throw new RuntimeException("Usuario no encontrado");
-        }
-    }
-
 }
-
-

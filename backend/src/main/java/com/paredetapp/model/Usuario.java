@@ -29,11 +29,8 @@ public class Usuario {
     private String codigoPostal;
     private String pais;
 
-    @Enumerated(EnumType.STRING)
+    @ManyToOne
+    @JoinColumn(name = "rol_id")
     private Rol rol;
-
-    public enum Rol {
-        ADMIN, USER
-    }
 }
 

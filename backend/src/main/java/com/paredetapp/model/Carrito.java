@@ -1,8 +1,17 @@
 package com.paredetapp.model;
 
+import lombok.Data;
+
 import javax.persistence.*;
 import java.util.UUID;
 
+/**
+ * Entidad que representa un registro en el carrito de compras.
+ * En lugar de almacenar directamente los UUID de usuario y producto,
+ * se utiliza la relación con las entidades correspondientes.
+ */
+
+@Data
 @Entity
 @Table(name = "carrito")
 public class Carrito {
@@ -11,12 +20,25 @@ public class Carrito {
     @GeneratedValue
     private UUID id;
 
-    @Column(name = "usuario_id", nullable = false)
-    private UUID usuarioId;
+    /**
+     * Relación ManyToOne con Usuario.
+     * Cada registro del carrito pertenece a un usuario.
+     */
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
 
-    @Column(name = "producto_id", nullable = false)
-    private UUID productoId;
+    /**
+     * Relación ManyToOne con Producto.
+     * Cada registro del carrito está asociado a un producto.
+     */
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "producto_id", nullable = false)
+    private Producto producto;
 
+    /**
+     * Cantidad del producto en el carrito.
+     */
     @Column(nullable = false)
     private int cantidad;
 
@@ -30,20 +52,20 @@ public class Carrito {
         this.id = id;
     }
 
-    public UUID getUsuarioId() {
-        return usuarioId;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setUsuarioId(UUID usuarioId) {
-        this.usuarioId = usuarioId;
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
-    public UUID getProductoId() {
-        return productoId;
+    public Producto getProducto() {
+        return producto;
     }
 
-    public void setProductoId(UUID productoId) {
-        this.productoId = productoId;
+    public void setProducto(Producto producto) {
+        this.producto = producto;
     }
 
     public int getCantidad() {
@@ -54,4 +76,5 @@ public class Carrito {
         this.cantidad = cantidad;
     }
 }
+
 

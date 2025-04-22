@@ -3,6 +3,7 @@ package com.paredetapp.service;
 import com.paredetapp.model.Direccion;
 import com.paredetapp.repository.DireccionRepository;
 import com.paredetapp.repository.UsuarioRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,18 +12,18 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class DireccionService {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
 
 
     @Autowired
     private DireccionRepository direccionRepository;
 
-    public boolean esPropietario(UUID direccionId, String emailUsuario) {
+    public boolean esPropietario(UUID direccionId, String userId) {
         return direccionRepository.findById(direccionId)
-                .map(d -> d.getUsuario().getEmail().equals(emailUsuario))
+                .map(d -> d.getUsuario().getId().toString().equals(userId))
                 .orElse(false);
     }
 

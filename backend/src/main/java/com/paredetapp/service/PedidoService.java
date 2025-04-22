@@ -2,6 +2,7 @@ package com.paredetapp.service;
 
 import com.paredetapp.model.Pedido;
 import com.paredetapp.repository.PedidoRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,9 +11,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class PedidoService {
-    @Autowired
-    private PedidoRepository pedidoRepository;
+
+    private final PedidoRepository pedidoRepository;
 
     public List<Pedido> obtenerTodos() {
         return pedidoRepository.findAll();
