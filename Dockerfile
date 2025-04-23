@@ -13,7 +13,7 @@ RUN apt-get update && \
 COPY . .
 
 # Compila e incluye Start-Class en el .jar
-RUN mvn clean install -DskipTests && mvn spring-boot:repackage
+RUN mvn clean package -DskipTests spring-boot:repackage
 
 # Ejecuta el .jar con límite de memoria
 CMD ["java", "-Xmx256m", "-Xms128m", "-jar", "target/ParedetApp-0.0.1-SNAPSHOT.jar"]
