@@ -12,14 +12,12 @@ RUN apt-get update && \
 # Copia el contenido del proyecto
 COPY . .
 
-# Compila el proyecto (genera el .jar en target/)
-RUN mvn clean package -DskipTests
+# Compila el proyecto y reempaqueta el jar correctamente
+RUN mvn clean package spring-boot:repackage -DskipTests
 
-# Reempaqueta el jar para incluir Start-Class
-RUN mvn spring-boot:repackage
-
-# Ejecuta el jar
+# Ejecuta el jar generado con límite de memoria
 CMD ["java", "-Xmx256m", "-Xms128m", "-jar", "target/ParedetApp-0.0.1-SNAPSHOT.jar"]
+
 
 
 
