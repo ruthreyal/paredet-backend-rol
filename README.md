@@ -1,67 +1,89 @@
-# 🛒 ParedetApp
+# ✅ Checklist antes de hacer push y redeploy en Railway
 
-**ParedetApp** es una tienda online especializada en la venta de papel pintado y fotomurales, desarrollada como parte del módulo de Proyecto del ciclo **Desarrollo de Aplicaciones Web (DAW)** durante el curso 2024-2025.
-
-## 🚀 Funcionalidades principales
-
-- Navegación por catálogo de productos
-- Filtrado por categoría y colección
-- Carrito de compras
-- Registro e inicio de sesión
-- Gestión de pedidos
-- Panel de administración
-
-## 🛠️ Tecnologías utilizadas
-
-| Tecnología | Descripción |
-|------------|-------------|
-| React      | Interfaz de usuario (frontend) |
-| Bootstrap  | Estilo y diseño responsive |
-| Axios      | Llamadas HTTP desde frontend |
-| Spring Boot | Backend en Java |
-| Spring Security + JWT | Autenticación y autorización |
-| Hibernate + JPA | Persistencia de datos |
-| PostgreSQL | Base de datos relacional |
-| GitHub     | Control de versiones |
-| Railway (previsto) | Despliegue del backend |
-
-## 📁 Estructura del proyecto
-
-```
-ParedetApp/
-├── backend/   → API REST con Spring Boot
-├── frontend/  → Aplicación React
-```
-
-## ⚙️ Cómo ejecutar el proyecto
-
-### 🔹 Backend (Spring Boot)
-```bash
-cd backend
-./mvnw spring-boot:run
-```
-
-Por defecto expone en: `http://localhost:8080`
-
-### 🔹 Frontend (React)
-```bash
-cd frontend
-npm install
-npm start
-```
-
-Se abrirá en: `http://localhost:3000`
-
-## 👩‍💻 Autor
-
-**Ruth Reyes Álvarez**  
-Ciclo Formativo: Desarrollo de Aplicaciones Web (DAW)  
-Curso 2024-2025 · IES Sotero Hernández
-
-## 📄 Licencia
-
-Proyecto académico sin ánimo de lucro.
+Este checklist te ayudará a evitar errores en el despliegue de tu backend con Spring Boot en Railway.
 
 ---
 
-> **Repositorio creado para uso académico como entrega parcial del Proyecto Integrado.**
+## 🛠️ 1. Verifica que el proyecto compila localmente
+
+```bash
+cd backend
+mvn clean install -DskipTests
+```
+
+🔹 Si da error, **no hagas push** hasta corregirlo.
+
+---
+
+## 🔍 2. Comprueba que el backend funciona en local
+
+Ejecuta el `.jar` generado para asegurarte:
+
+```bash
+java -jar target/ParedetApp-0.0.1-SNAPSHOT.jar
+```
+
+Y abre en el navegador:
+
+```
+http://localhost:8080/actuator/health
+```
+
+---
+
+## 🧹 3. Asegúrate de no subir archivos ignorados
+
+Confirma que no hay archivos `.jar`, `/target`, ni `node_modules/` en staging:
+
+```bash
+git status
+```
+
+✅ Si están ahí, revisa tu `.gitignore` o haz:
+
+```bash
+git reset HEAD archivo
+```
+
+---
+
+## 💬 4. Resume los cambios en un buen mensaje de commit
+
+```bash
+git add .
+git commit -m "🚀 Login funcionando + control acceso con JWT"
+```
+
+---
+
+## ☁️ 5. Haz push a tu rama de desarrollo (por ejemplo, `dev`)
+
+```bash
+git push origin dev
+```
+
+---
+
+## 🚀 6. Verifica que Railway detecta el cambio y hace deploy
+
+En Railway > Deployments, asegúrate de ver el nuevo commit con el mensaje que pusiste.
+
+---
+
+## 🧪 7. Prueba el backend desplegado
+
+Usa:
+
+```
+https://<tu-backend>.railway.app/actuator/health
+```
+
+Y luego Postman o tu frontend para comprobar login, registro, etc.
+
+---
+
+## 🧘‍♀️ Consejo extra:
+
+> Si algo falla, **no empieces a modificar código sin antes verificar los logs del deploy en Railway**. A veces el problema es una tontería como una variable mal escrita o una dependencia corrupta.
+
+---
