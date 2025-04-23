@@ -1,15 +1,24 @@
-# Etapa de compilación
-FROM maven:3.9.4-eclipse-temurin-21 AS build
-WORKDIR /app
-COPY backend/pom.xml .
-COPY backend/src ./src
-RUN mvn clean package -DskipTests
+# Imagen base con Java 21
+FROM openjdk:21-jdk-slim
 
-# Etapa de ejecución
-FROM eclipse-temurin:21-jdk-alpine
+# Establece el directorio de trabajo
 WORKDIR /app
-COPY --from=build /app/target/ParedetApp-0.0.1-SNAPSHOT.jar /app/app.jar
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+
+# Instala Maven
+RUN apt-get update && \
+    apt-get install -y maven && \
+    apt-get clean
+
+# Copia el contenido del proyecto
+COPY . .
+
+# Compila el proyecto (sin ejecutar tests)
+RUN mvn clean install -DskipTests
+
+# Comando para ejecutar la aplicación con límite de memoria
+CMD ["java", "-Xmx256m", "-Xms128m", "-jar", "target/ParedetApp-0.0.1-SNAPSHOT.jar"]
+
+
+
 
 
