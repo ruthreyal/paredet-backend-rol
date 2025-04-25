@@ -7,6 +7,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface CarritoRepository extends JpaRepository<Carrito, UUID> {
-    List<Carrito> findByUsuarioId(UUID usuarioId);
+    List<Carrito> findByUsuario_Id(UUID usuarioId); // ✅ ya no fallará
 }
 
