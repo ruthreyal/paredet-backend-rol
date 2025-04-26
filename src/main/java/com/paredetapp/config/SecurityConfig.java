@@ -42,14 +42,18 @@ public class SecurityConfig {
                 .antMatchers("/api/auth/**", "/actuator/**", "/ping").permitAll()
                 .anyRequest().authenticated()
                 .and()
+                .anonymous() // 👈 PERO AQUÍ HAY QUE CERRAR con .and()
+                .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
+
         return http.build();
     }
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
