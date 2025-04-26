@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .cors().and()
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/auth/**", "/actuator/**").permitAll()
+                .antMatchers("/api/auth/**", "/actuator/**", "/ping").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
