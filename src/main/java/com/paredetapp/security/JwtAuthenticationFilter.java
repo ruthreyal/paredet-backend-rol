@@ -64,15 +64,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (userId != null && role != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
 
-            // 🔥 Creamos un objeto User (de Spring Security) como principal
-            User principal = new User(userId, "", authorities);
-
             UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(principal, null, authorities);
+                    new UsernamePasswordAuthenticationToken(userId, null, authorities);
 
             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authToken);
 
+            // Debug
             System.out.println("🛡️ Token extraído correctamente, userId = " + userId);
             System.out.println("🛡️ Rol extraído = " + role);
             System.out.println("🛡️ Authorities seteadas = " + authorities);
