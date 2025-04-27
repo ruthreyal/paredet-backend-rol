@@ -29,7 +29,7 @@ public class UsuarioController {
     /**
      * Permite al ADMIN o al propio usuario acceder a sus datos.
      */
-    @PreAuthorize("hasRole('ADMIN') or #id.toString() == authentication.principal.username")
+    @PreAuthorize("hasRole('ADMIN') or #id.toString() == authentication.name")
     @GetMapping("/{id}")
     public Optional<Usuario> obtenerUsuario(@PathVariable UUID id) {
         return usuarioService.obtenerPorId(id);
@@ -38,7 +38,7 @@ public class UsuarioController {
     /**
      * Permite al ADMIN o al propio usuario acceder a sus datos por email.
      */
-    @PreAuthorize("hasRole('ADMIN') or #email == authentication.principal.username")
+    @PreAuthorize("hasRole('ADMIN') or #email == authentication.name")
     @GetMapping("/email/{email}")
     public Optional<Usuario> obtenerUsuarioPorEmail(@PathVariable String email) {
         return usuarioService.obtenerPorEmail(email);
@@ -56,7 +56,7 @@ public class UsuarioController {
     /**
      * Solo el ADMIN o el propio usuario pueden actualizar sus datos.
      */
-    @PreAuthorize("hasRole('ADMIN') or #id.toString() == authentication.principal.username")
+    @PreAuthorize("hasRole('ADMIN') or #id.toString() == authentication.name")
     @PutMapping("/{id}")
     public Usuario actualizarUsuario(@PathVariable UUID id, @RequestBody Usuario usuarioActualizado) {
         return usuarioService.actualizarUsuario(id, usuarioActualizado);
