@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -17,7 +18,8 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Filtro que intercepta las peticiones HTTP para validar el token JWT y establecer la autenticación.
+ * Filtro que intercepta las peticiones HTTP para validar el token JWT
+ * y establecer la autenticación de Spring Security con el ID y rol extraídos.
  */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -56,13 +58,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (ExpiredJwtException e) {
             System.out.println("❌ Token expirado");
         } catch (Exception e) {
-            System.out.println("❌ Error al extraer el token: " + e.getMessage());
+            System.out.println("❌ Error al extraer datos del token: " + e.getMessage());
         }
 
         if (userId != null && role != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
+
+            // 🔥 Creamos un objeto User (de Spring Security) como principal
+            User principal = new User(userId, "", authorities);
+
             UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(userId, null, authorities);
+                    new UsernamePasswordAuthenticationToken(principal, null, authorities);
 
             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authToken);
@@ -71,6 +77,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
+
 
 
 
