@@ -36,18 +36,21 @@ public class UsuarioController {
     public Optional<Usuario> obtenerUsuario(@PathVariable UUID id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        // Si es ADMIN, puede acceder a cualquier usuario
+        // 💬 DEBUG: Imprimir el principal y los roles
+        System.out.println("🔵 authentication.getName() = " + authentication.getName());
+        System.out.println("🔵 authentication.getAuthorities() = " + authentication.getAuthorities());
+
         if (authentication.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
             return usuarioService.obtenerPorId(id);
         }
 
-        // Si es USER, solo puede acceder a su propio ID
         if (!authentication.getName().equals(id.toString())) {
             throw new AccessDeniedException("No tienes permiso para acceder a este recurso");
         }
 
         return usuarioService.obtenerPorId(id);
     }
+
 
     /**
      * Permite al ADMIN o al propio usuario acceder a sus datos por email.
