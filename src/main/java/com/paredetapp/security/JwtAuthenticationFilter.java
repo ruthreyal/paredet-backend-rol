@@ -3,6 +3,7 @@ package com.paredetapp.security;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -13,7 +14,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
+/**
+ * Filtro que intercepta las peticiones HTTP para validar el token JWT y establecer la autenticación.
+ */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -43,18 +48,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         final String token = authHeader.substring(7);
         String userId = null;
+        String role = null;
 
         try {
-            userId = jwtService.extractUsername(token); // Aquí extraemos el UUID directamente
+            userId = jwtService.extractUserId(token);
+            role = jwtService.extractUserRole(token);
         } catch (ExpiredJwtException e) {
             System.out.println("❌ Token expirado");
         } catch (Exception e) {
             System.out.println("❌ Error al extraer el token: " + e.getMessage());
         }
 
-        if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        if (userId != null && role != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role));
             UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(userId, null, null); // ✅ Aquí ponemos el ID como principal
+                    new UsernamePasswordAuthenticationToken(userId, null, authorities);
+
             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authToken);
         }
@@ -62,6 +71,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
+
 
 
 
