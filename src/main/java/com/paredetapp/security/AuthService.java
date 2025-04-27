@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,7 +19,7 @@ public class AuthService {
     private final RolRepository rolRepository;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
-
+    private final PasswordEncoder passwordEncoder;
     /**
      * Registra un nuevo usuario y asigna el rol USER por defecto si no se especifica.
      * Devuelve un token JWT generado tras el registro.
