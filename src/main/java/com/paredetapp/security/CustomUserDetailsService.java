@@ -18,23 +18,22 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     /**
-     * Carga los datos del usuario desde la base de datos a partir del email (username).
-     * Utiliza Spring Security para crear el UserDetails necesario para la autenticación.
+     * Carga los datos del usuario desde la base de datos a partir del email (username recibido).
+     * Crea un UserDetails usando el UUID del usuario como username real.
      */
     @Override
     public UserDetails loadUserByUsername(String username) {
-        // Buscar el usuario en base de datos
         Usuario usuario = usuarioRepository.findByEmail(username.trim())
                 .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con email: " + username));
 
-        // Crear el objeto UserDetails con el email, contraseña y rol del usuario
         return User.builder()
-                .username(usuario.getEmail())
+                .username(usuario.getId().toString())
                 .password(usuario.getPassword())
-                .roles(usuario.getRol().getNombre()) // ✅ Usamos getNombre() en lugar de .name()
+                .roles(usuario.getRol().getNombre())
                 .build();
     }
 }
+
 
 
 
