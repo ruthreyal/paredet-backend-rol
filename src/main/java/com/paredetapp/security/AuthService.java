@@ -24,6 +24,9 @@ public class AuthService {
      * Devuelve un token JWT generado tras el registro.
      */
     public String register(Usuario request) {
+        // ✅ Encriptamos la contraseña antes de guardar
+        request.setPassword(passwordEncoder.encode(request.getPassword()));
+
         if (request.getRol() == null) {
             Rol rolUser = rolRepository.findByNombre("USER")
                     .orElseThrow(() -> new IllegalArgumentException("Rol USER no encontrado"));
@@ -37,6 +40,7 @@ public class AuthService {
                 request.getRol().getNombre()
         );
     }
+
 
     /**
      * Autentica al usuario con email y contraseña, y devuelve un token JWT.
