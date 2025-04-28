@@ -1,7 +1,5 @@
-package com.paredetapp.config;
+package com.paredetapp.security;
 
-import com.paredetapp.security.JwtAuthenticationFilter;
-import com.paredetapp.security.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
