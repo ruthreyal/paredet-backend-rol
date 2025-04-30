@@ -1,14 +1,17 @@
 package com.paredetapp.controller;
 
+import com.paredetapp.dto.UsuarioDTO;
 import com.paredetapp.model.Usuario;
 import com.paredetapp.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/usuarios")
@@ -17,54 +20,60 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
-    /**
-     * Solo el ADMIN puede ver la lista completa de usuarios.
-     */
+    private UsuarioDTO convertirADTO(Usuario usuario) {
+        return new UsuarioDTO(
+            usuario.getId(),
+            usuario.getNombre(),
+            usuario.getApellido(),
+            usuario.getEmail(),
+            usuario.getTelefono(),
+            usuario.getDireccion(),
+            usuario.getCiudad(),
+            usuario.getCodigoPostal(),
+            usuario.getPais(),
+            usuario.getRol() != null ? usuario.getRol().getNombre() : null
+        );
+    }
+
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public List<Usuario> listarUsuarios() {
-        return usuarioService.obtenerTodos();
+    public List<UsuarioDTO> listarUsuarios() {
+        return usuarioService.obtenerTodos()
+                .stream()
+                .map(this::convertirADTO)
+                .collect(Collectors.toList());
     }
 
-    /**
-     * Permite al ADMIN o al propio usuario acceder a sus datos.
-     */
     @PreAuthorize("hasRole('ADMIN') or #id.toString() == authentication.principal.username")
     @GetMapping("/{id}")
-    public Optional<Usuario> obtenerUsuario(@PathVariable UUID id) {
-        return usuarioService.obtenerPorId(id);
+    public ResponseEntity<UsuarioDTO> obtenerUsuario(@PathVariable UUID id) {
+        Optional<Usuario> usuarioOpt = usuarioService.obtenerPorId(id);
+        return usuarioOpt.map(usuario -> ResponseEntity.ok(convertirADTO(usuario)))
+                         .orElse(ResponseEntity.notFound().build());
     }
 
-    /**
-     * Permite al ADMIN o al propio usuario acceder a sus datos por email.
-     */
     @PreAuthorize("hasRole('ADMIN') or #email == authentication.principal.username")
     @GetMapping("/email/{email}")
-    public Optional<Usuario> obtenerUsuarioPorEmail(@PathVariable String email) {
-        return usuarioService.obtenerPorEmail(email);
+    public ResponseEntity<UsuarioDTO> obtenerUsuarioPorEmail(@PathVariable String email) {
+        Optional<Usuario> usuarioOpt = usuarioService.obtenerPorEmail(email);
+        return usuarioOpt.map(usuario -> ResponseEntity.ok(convertirADTO(usuario)))
+                         .orElse(ResponseEntity.notFound().build());
     }
 
-    /**
-     * Solo el ADMIN puede crear nuevos usuarios con rol personalizado.
-     */
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public Usuario crearUsuario(@RequestBody Usuario usuario) {
-        return usuarioService.guardarUsuario(usuario);
+    public ResponseEntity<UsuarioDTO> crearUsuario(@RequestBody Usuario usuario) {
+        Usuario creado = usuarioService.guardarUsuario(usuario);
+        return ResponseEntity.ok(convertirADTO(creado));
     }
 
-    /**
-     * Solo el ADMIN o el propio usuario pueden actualizar sus datos.
-     */
     @PreAuthorize("hasRole('ADMIN') or #id.toString() == authentication.principal.username")
     @PutMapping("/{id}")
-    public Usuario actualizarUsuario(@PathVariable UUID id, @RequestBody Usuario usuarioActualizado) {
-        return usuarioService.actualizarUsuario(id, usuarioActualizado);
+    public ResponseEntity<UsuarioDTO> actualizarUsuario(@PathVariable UUID id, @RequestBody Usuario usuarioActualizado) {
+        Usuario actualizado = usuarioService.actualizarUsuario(id, usuarioActualizado);
+        return ResponseEntity.ok(convertirADTO(actualizado));
     }
 
-    /**
-     * Solo el ADMIN puede eliminar usuarios.
-     */
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public void eliminarUsuario(@PathVariable UUID id) {
