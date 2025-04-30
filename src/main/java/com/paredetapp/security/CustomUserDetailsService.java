@@ -27,13 +27,18 @@ public class CustomUserDetailsService implements UserDetailsService {
         Usuario usuario = usuarioRepository.findByEmail(username.trim())
                 .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con email: " + username));
 
+        // 🔎 LOG para depurar si el rol se está cargando correctamente
+        System.out.println("➡️ Email: " + usuario.getEmail());
+        System.out.println("➡️ Rol: " + (usuario.getRol() != null ? usuario.getRol().getNombre() : "NULL"));
+
         // Crear el objeto UserDetails con el email, contraseña y rol del usuario
         return User.builder()
                 .username(usuario.getEmail())
                 .password(usuario.getPassword())
-                .roles(usuario.getRol().getNombre()) // ✅ Usamos getNombre() en lugar de .name()
+                .roles(usuario.getRol().getNombre())
                 .build();
     }
+
 }
 
 
