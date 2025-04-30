@@ -1,6 +1,8 @@
 package com.paredetapp.model;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import java.util.UUID;
 
@@ -29,8 +31,9 @@ public class Usuario {
     private String codigoPostal;
     private String pais;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "rol_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Rol rol;
 }
 

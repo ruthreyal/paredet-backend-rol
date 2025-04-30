@@ -22,18 +22,19 @@ public class UsuarioController {
 
     private UsuarioDTO convertirADTO(Usuario usuario) {
         return new UsuarioDTO(
-            usuario.getId(),
-            usuario.getNombre(),
-            usuario.getApellido(),
-            usuario.getEmail(),
-            usuario.getTelefono(),
-            usuario.getDireccion(),
-            usuario.getCiudad(),
-            usuario.getCodigoPostal(),
-            usuario.getPais(),
-            usuario.getRol() != null ? usuario.getRol().getNombre() : null
+                usuario.getId(),
+                usuario.getNombre(),
+                usuario.getApellido(),
+                usuario.getEmail(),
+                usuario.getTelefono(),
+                usuario.getDireccion(),
+                usuario.getCiudad(),
+                usuario.getCodigoPostal(),
+                usuario.getPais(),
+                usuario.getRol() != null ? usuario.getRol().getNombre() : null
         );
     }
+
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
