@@ -24,8 +24,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) {
         // Buscar el usuario en base de datos
-        Usuario usuario = usuarioRepository.findByEmail(username.trim())
+        Usuario usuario = usuarioRepository.findByEmailConRol(username.trim())
                 .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con email: " + username));
+
 
         // 🔎 LOG para depurar si el rol se está cargando correctamente
         System.out.println("➡️ Email: " + usuario.getEmail());
