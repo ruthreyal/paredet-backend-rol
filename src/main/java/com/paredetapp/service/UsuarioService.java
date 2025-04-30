@@ -3,7 +3,6 @@ package com.paredetapp.service;
 import com.paredetapp.model.Usuario;
 import com.paredetapp.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,10 +35,6 @@ public class UsuarioService {
         return usuarioRepository.findByEmail(email);
     }
 
-    /**
-     * Actualiza los datos personales de un usuario existente.
-     * No actualiza email ni contraseña por seguridad.
-     */
     public Usuario actualizarUsuario(UUID id, Usuario usuarioActualizado) {
         return usuarioRepository.findById(id)
                 .map(usuarioExistente -> {
@@ -55,4 +50,11 @@ public class UsuarioService {
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
     }
 
+    // Verifica si el email del token coincide con el del usuario con el ID dado
+    public boolean esPropietario(UUID id, String email) {
+        return usuarioRepository.findById(id)
+                .map(u -> u.getEmail().equalsIgnoreCase(email))
+                .orElse(false);
+    }
 }
+

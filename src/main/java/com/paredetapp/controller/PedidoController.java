@@ -36,21 +36,21 @@ public class PedidoController {
     }
 
     /**
-     * Cualquier usuario autenticado puede crear un pedido.
-     */
-    @PreAuthorize("isAuthenticated()")
-    @PostMapping
-    public Pedido crearPedido(@RequestBody Pedido pedido) {
-        return pedidoService.guardarPedido(pedido);
-    }
-
-    /**
-     * ADMIN o el propietario pueden eliminar el pedido.
+     * ADMIN o propietario pueden eliminar su pedido.
      */
     @PreAuthorize("hasRole('ADMIN') or @pedidoService.esPropietario(#id, authentication.principal.username)")
     @DeleteMapping("/{id}")
     public void eliminarPedido(@PathVariable UUID id) {
         pedidoService.eliminarPedido(id);
+    }
+
+    /**
+     * Cualquier usuario autenticado puede guardar un pedido.
+     */
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PostMapping
+    public Pedido guardarPedido(@RequestBody Pedido pedido) {
+        return pedidoService.guardarPedido(pedido);
     }
 }
 

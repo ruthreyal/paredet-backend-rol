@@ -1,29 +1,33 @@
-# ✅ Checklist antes de hacer push y redeploy en Railway
+# 🚀 Despliegue de Backend - ParedetApp
 
-Este checklist te ayudará a evitar errores en el despliegue de tu backend con Spring Boot en Railway.
+Este repositorio contiene el backend del proyecto **ParedetApp**, una tienda online de papel pintado y fotomurales, desarrollado con Spring Boot y PostgreSQL.
 
 ---
 
-## 🛠️ 1. Verifica que el proyecto compila localmente
+## ✅ Checklist antes de hacer push y redeploy en Railway
+
+Este checklist te ayudará a evitar errores en el despliegue automático en Railway.
+
+---
+
+### 🛠️ 1. Verifica que el proyecto compila localmente
 
 ```bash
 cd backend
 mvn clean install -DskipTests
 ```
 
-🔹 Si da error, **no hagas push** hasta corregirlo.
+❗ Si da error, **no hagas push** hasta corregirlo.
 
 ---
 
-## 🔍 2. Comprueba que el backend funciona en local
-
-Ejecuta el `.jar` generado para asegurarte:
+### 🔍 2. Comprueba que el backend funciona en local
 
 ```bash
 java -jar target/ParedetApp-0.0.1-SNAPSHOT.jar
 ```
 
-Y abre en el navegador:
+Después visita en el navegador:
 
 ```
 http://localhost:8080/actuator/health
@@ -31,15 +35,15 @@ http://localhost:8080/actuator/health
 
 ---
 
-## 🧹 3. Asegúrate de no subir archivos ignorados
+### 🧹 3. Asegúrate de no subir archivos ignorados
 
-Confirma que no hay archivos `.jar`, `/target`, ni `node_modules/` en staging:
+Confirma que no hay `.jar`, `/target`, ni `node_modules/` en staging:
 
 ```bash
 git status
 ```
 
-✅ Si están ahí, revisa tu `.gitignore` o haz:
+Si aparecen:
 
 ```bash
 git reset HEAD archivo
@@ -47,7 +51,7 @@ git reset HEAD archivo
 
 ---
 
-## 💬 4. Resume los cambios en un buen mensaje de commit
+### 💬 4. Resume los cambios con un buen mensaje de commit
 
 ```bash
 git add .
@@ -56,7 +60,7 @@ git commit -m "🚀 Login funcionando + control acceso con JWT"
 
 ---
 
-## ☁️ 5. Haz push a tu rama de desarrollo (por ejemplo, `dev`)
+### ☁️ 5. Haz push a tu rama de desarrollo (por ejemplo, `dev`)
 
 ```bash
 git push origin dev
@@ -64,26 +68,30 @@ git push origin dev
 
 ---
 
-## 🚀 6. Verifica que Railway detecta el cambio y hace deploy
+### ✅ 6. Verifica que Railway hace deploy automático
 
-En Railway > Deployments, asegúrate de ver el nuevo commit con el mensaje que pusiste.
+En Railway > pestaña **Deployments**, asegúrate de ver el commit más reciente.
 
 ---
 
-## 🧪 7. Prueba el backend desplegado
+### 🧪 7. Prueba el backend desplegado
 
-Usa:
-
-```
+```bash
 https://<tu-backend>.railway.app/actuator/health
 ```
 
-Y luego Postman o tu frontend para comprobar login, registro, etc.
+Luego, prueba login, registro y otros endpoints con Postman o frontend.
 
 ---
 
-## 🧘‍♀️ Consejo extra:
+### 📌 Documentación de la API
 
-> Si algo falla, **no empieces a modificar código sin antes verificar los logs del deploy en Railway**. A veces el problema es una tontería como una variable mal escrita o una dependencia corrupta.
+Consulta todos los endpoints disponibles:
+
+➡️ [Ver lista completa de endpoints](./ENDPOINTS.md)
 
 ---
+
+### 🧘 Consejo extra
+
+> Si algo falla, **no empieces a modificar código sin antes revisar los logs en Railway**. A veces es solo una variable mal escrita o un fallo de red.

@@ -4,7 +4,6 @@ import com.paredetapp.model.Direccion;
 import com.paredetapp.repository.DireccionRepository;
 import com.paredetapp.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,19 +14,14 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class DireccionService {
 
+    private final DireccionRepository direccionRepository;
     private final UsuarioRepository usuarioRepository;
 
-
-    @Autowired
-    private DireccionRepository direccionRepository;
-
-    public boolean esPropietario(UUID direccionId, String userId) {
+    public boolean esPropietario(UUID direccionId, String email) {
         return direccionRepository.findById(direccionId)
-                .map(d -> d.getUsuario().getId().toString().equals(userId))
+                .map(d -> d.getUsuario().getEmail().equalsIgnoreCase(email))
                 .orElse(false);
     }
-
-
 
     public List<Direccion> obtenerTodas() {
         return direccionRepository.findAll();
@@ -45,4 +39,6 @@ public class DireccionService {
         direccionRepository.deleteById(id);
     }
 }
+
+
 

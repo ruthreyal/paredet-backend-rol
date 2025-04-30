@@ -15,9 +15,6 @@ public class CategoriaController {
 
     private final CategoriaService categoriaService;
 
-    /**
-     * Crea una nueva categoría (solo para ADMIN).
-     */
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Categoria> crearCategoria(@RequestBody Categoria categoria) {
@@ -25,14 +22,12 @@ public class CategoriaController {
         return ResponseEntity.ok(nueva);
     }
 
-    /**
-     * Lista todas las categorías (acceso completamente público).
-     */
     @GetMapping
     public ResponseEntity<List<Categoria>> listarCategorias() {
         return ResponseEntity.ok(categoriaService.getAllCategorias());
     }
 }
+
 
 
 

@@ -45,5 +45,13 @@ public class FavoritoService {
     public void eliminarFavorito(UUID usuarioId, UUID productoId) {
         favoritoRepository.deleteByUsuarioIdAndProductoId(usuarioId, productoId);
     }
+
+    // Verifica si el email autenticado corresponde al usuario del recurso
+    public boolean emailCoincide(UUID usuarioId, String email) {
+        return usuarioRepository.findById(usuarioId)
+                .map(u -> u.getEmail().equalsIgnoreCase(email))
+                .orElse(false);
+    }
 }
+
 

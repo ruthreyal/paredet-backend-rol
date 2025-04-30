@@ -41,8 +41,8 @@ public class AuthService {
         Usuario usuario = usuarioRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        // ⚠️ Generar token usando el ID como subject
-        return jwtService.generateToken(usuario.getId().toString());
+
+        return jwtService.generateToken(usuario.getEmail());
     }
 
     /**
@@ -57,7 +57,7 @@ public class AuthService {
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         // ⚠️ Generar token usando el ID como subject
-        return jwtService.generateToken(usuario.getId().toString());
+        return jwtService.generateToken(usuario.getEmail());
     }
 }
 

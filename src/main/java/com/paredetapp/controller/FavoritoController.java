@@ -4,6 +4,8 @@ import com.paredetapp.model.Favorito;
 import com.paredetapp.service.FavoritoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,31 +18,25 @@ public class FavoritoController {
 
     private final FavoritoService favoritoService;
 
-    /**
-     * Obtener los favoritos de un usuario.
-     */
-    @PreAuthorize("#usuarioId.toString() == authentication.principal.username or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or @favoritoService.emailCoincide(#usuarioId, #principal.username)")
     @GetMapping("/{usuarioId}")
-    public List<Favorito> listarFavoritos(@PathVariable UUID usuarioId) {
+    public List<Favorito> listarFavoritos(@PathVariable UUID usuarioId, @AuthenticationPrincipal UserDetails principal) {
         return favoritoService.obtenerPorUsuario(usuarioId);
     }
 
-    /**
-     * Añadir un producto a favoritos.
-     */
-    @PreAuthorize("#usuarioId.toString() == authentication.principal.username")
+    @PreAuthorize("@favoritoService.emailCoincide(#usuarioId, #principal.username)")
     @PostMapping("/{usuarioId}/{productoId}")
-    public Favorito agregarFavorito(@PathVariable UUID usuarioId, @PathVariable UUID productoId) {
+    public Favorito agregarFavorito(@PathVariable UUID usuarioId, @PathVariable UUID productoId,
+                                    @AuthenticationPrincipal UserDetails principal) {
         return favoritoService.agregarFavorito(usuarioId, productoId);
     }
 
-    /**
-     * Eliminar un producto de favoritos.
-     */
-    @PreAuthorize("#usuarioId.toString() == authentication.principal.username or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or @favoritoService.emailCoincide(#usuarioId, #principal.username)")
     @DeleteMapping("/{usuarioId}/{productoId}")
-    public void eliminarFavorito(@PathVariable UUID usuarioId, @PathVariable UUID productoId) {
+    public void eliminarFavorito(@PathVariable UUID usuarioId, @PathVariable UUID productoId,
+                                 @AuthenticationPrincipal UserDetails principal) {
         favoritoService.eliminarFavorito(usuarioId, productoId);
     }
 }
+
 

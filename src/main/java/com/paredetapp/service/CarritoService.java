@@ -2,8 +2,8 @@ package com.paredetapp.service;
 
 import com.paredetapp.model.Carrito;
 import com.paredetapp.repository.CarritoRepository;
+import com.paredetapp.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +14,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CarritoService {
 
-
     private final CarritoRepository carritoRepository;
+    private final UsuarioRepository usuarioRepository;
 
     public List<Carrito> obtenerTodos() {
         return carritoRepository.findAll();
@@ -33,10 +33,19 @@ public class CarritoService {
         carritoRepository.deleteById(id);
     }
 
-    public boolean esPropietario(UUID carritoId, String userId) {
+    public boolean esPropietario(UUID carritoId, String email) {
         return carritoRepository.findById(carritoId)
-                .map(c -> c.getUsuarioId().toString().equals(userId))
+                .map(c -> usuarioRepository.findById(c.getUsuarioId())
+                        .map(u -> u.getEmail().equalsIgnoreCase(email))
+                        .orElse(false))
+                .orElse(false);
+    }
+
+    public boolean emailCoincide(UUID usuarioId, String email) {
+        return usuarioRepository.findById(usuarioId)
+                .map(u -> u.getEmail().equalsIgnoreCase(email))
                 .orElse(false);
     }
 }
+
 
