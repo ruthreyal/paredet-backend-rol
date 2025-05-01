@@ -72,9 +72,8 @@ public class UsuarioService {
 
                     // 👉 Nuevo: actualizar el rol si se incluye en el JSON
                     if (usuarioActualizado.getRol() != null && usuarioActualizado.getRol().getNombre() != null) {
-                        Rol rol = rolRepository.findByNombre(usuarioActualizado.getRol().getNombre())
-                                .orElseThrow(() -> new RuntimeException("Rol no encontrado: " + usuarioActualizado.getRol().getNombre()));
-                        usuarioExistente.setRol(rol);
+                        rolRepository.findByNombre(usuarioActualizado.getRol().getNombre())
+                                .ifPresent(usuarioExistente::setRol); // solo si lo encuentra
                     }
 
                     return usuarioRepository.save(usuarioExistente);
