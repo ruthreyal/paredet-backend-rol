@@ -1,6 +1,8 @@
 package com.paredetapp.service;
 
+import com.paredetapp.model.Rol;
 import com.paredetapp.model.Usuario;
+import com.paredetapp.repository.RolRepository;
 import com.paredetapp.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,8 @@ import java.util.UUID;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final RolRepository rolRepository;
+
 
     public List<Usuario> obtenerTodos() {
         return usuarioRepository.findAll();
@@ -65,6 +69,14 @@ public class UsuarioService {
                     usuarioExistente.setCiudad(usuarioActualizado.getCiudad());
                     usuarioExistente.setCodigoPostal(usuarioActualizado.getCodigoPostal());
                     usuarioExistente.setPais(usuarioActualizado.getPais());
+
+                    // 👉 Nuevo: actualizar el rol si se incluye en el JSON
+                    if (usuarioActualizado.getRol() != null && usuarioActualizado.getRol().getNombre() != null) {
+                        Rol rol = rolRepository.findByNombre(usuarioActualizado.getRol().getNombre())
+                                .orElseThrow(() -> new RuntimeException("Rol no encontrado: " + usuarioActualizado.getRol().getNombre()));
+                        usuarioExistente.setRol(rol);
+                    }
+
                     return usuarioRepository.save(usuarioExistente);
                 })
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con email: " + email));
