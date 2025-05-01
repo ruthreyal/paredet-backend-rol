@@ -3,6 +3,7 @@ package com.paredetapp.controller;
 import com.paredetapp.dto.UsuarioDTO;
 import com.paredetapp.model.Usuario;
 import com.paredetapp.service.UsuarioService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -62,14 +63,14 @@ public class UsuarioController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public ResponseEntity<UsuarioDTO> crearUsuario(@RequestBody Usuario usuario) {
+    public ResponseEntity<UsuarioDTO> crearUsuario(@Valid @RequestBody Usuario usuario) {
         Usuario creado = usuarioService.guardarUsuario(usuario);
         return ResponseEntity.ok(convertirADTO(creado));
     }
 
     @PreAuthorize("hasRole('ADMIN') or #email == authentication.principal.username")
     @PutMapping("/email/{email}")
-    public ResponseEntity<UsuarioDTO> actualizarUsuarioPorEmail(@PathVariable String email, @RequestBody Usuario usuarioActualizado) {
+    public ResponseEntity<UsuarioDTO> actualizarUsuarioPorEmail(@PathVariable String email, @Valid @RequestBody Usuario usuarioActualizado) {
         Usuario actualizado = usuarioService.actualizarPorEmail(email, usuarioActualizado);
         return ResponseEntity.ok(convertirADTO(actualizado));
     }
@@ -80,5 +81,6 @@ public class UsuarioController {
         usuarioService.eliminarPorEmail(email);
     }
 }
+
 
 
