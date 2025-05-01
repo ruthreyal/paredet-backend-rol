@@ -70,7 +70,9 @@ public class UsuarioService {
                     usuarioExistente.setCodigoPostal(usuarioActualizado.getCodigoPostal());
                     usuarioExistente.setPais(usuarioActualizado.getPais());
 
-                    // 👉 Nuevo: actualizar el rol si se incluye en el JSON
+                    System.out.println("➡️ Rol recibido: " + usuarioActualizado.getRol());
+                    System.out.println("➡️ Nombre del rol: " + (usuarioActualizado.getRol() != null ? usuarioActualizado.getRol().getNombre() : "null"));
+
                     if (usuarioActualizado.getRol() != null && usuarioActualizado.getRol().getNombre() != null) {
                         rolRepository.findByNombre(usuarioActualizado.getRol().getNombre())
                                 .ifPresent(usuarioExistente::setRol);
