@@ -7,6 +7,10 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.Collections;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -19,28 +23,25 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     /**
      * Carga los datos del usuario desde la base de datos a partir del email (username).
-     * Utiliza Spring Security para crear el UserDetails necesario para la autenticación.
+     * Añade el rol como autoridad en formato ROLE_ para compatibilidad con Spring Security.
      */
     @Override
     public UserDetails loadUserByUsername(String username) {
-        // Buscar el usuario en base de datos
         Usuario usuario = usuarioRepository.findByEmailConRol(username.trim())
                 .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con email: " + username));
 
+        String nombreRol = usuario.getRol().getNombre(); // ejemplo: "ADMIN"
+        GrantedAuthority autoridad = new SimpleGrantedAuthority("ROLE_" + nombreRol);
 
-        // 🔎 LOG para depurar si el rol se está cargando correctamente
-        System.out.println("➡️ Email: " + usuario.getEmail());
-        System.out.println("➡️ Rol: " + (usuario.getRol() != null ? usuario.getRol().getNombre() : "NULL"));
-
-        // Crear el objeto UserDetails con el email, contraseña y rol del usuario
         return User.builder()
                 .username(usuario.getEmail())
                 .password(usuario.getPassword())
-                .roles(usuario.getRol().getNombre())
+                .authorities(Collections.singleton(autoridad))
                 .build();
     }
-
 }
+
+
 
 
 

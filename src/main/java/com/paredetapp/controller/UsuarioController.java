@@ -35,7 +35,6 @@ public class UsuarioController {
         );
     }
 
-
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public List<UsuarioDTO> listarUsuarios() {
@@ -45,12 +44,12 @@ public class UsuarioController {
                 .collect(Collectors.toList());
     }
 
-    @PreAuthorize("hasRole('ADMIN') or #id.toString() == authentication.principal.username")
+    @PreAuthorize("hasRole('ADMIN') or @usuarioService.esPropietario(#id, authentication.principal.username)")
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioDTO> obtenerUsuario(@PathVariable UUID id) {
         Optional<Usuario> usuarioOpt = usuarioService.obtenerPorId(id);
         return usuarioOpt.map(usuario -> ResponseEntity.ok(convertirADTO(usuario)))
-                         .orElse(ResponseEntity.notFound().build());
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PreAuthorize("hasRole('ADMIN') or #email == authentication.principal.username")
@@ -58,7 +57,7 @@ public class UsuarioController {
     public ResponseEntity<UsuarioDTO> obtenerUsuarioPorEmail(@PathVariable String email) {
         Optional<Usuario> usuarioOpt = usuarioService.obtenerPorEmail(email);
         return usuarioOpt.map(usuario -> ResponseEntity.ok(convertirADTO(usuario)))
-                         .orElse(ResponseEntity.notFound().build());
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -68,16 +67,18 @@ public class UsuarioController {
         return ResponseEntity.ok(convertirADTO(creado));
     }
 
-    @PreAuthorize("hasRole('ADMIN') or #id.toString() == authentication.principal.username")
-    @PutMapping("/{id}")
-    public ResponseEntity<UsuarioDTO> actualizarUsuario(@PathVariable UUID id, @RequestBody Usuario usuarioActualizado) {
-        Usuario actualizado = usuarioService.actualizarUsuario(id, usuarioActualizado);
+    @PreAuthorize("hasRole('ADMIN') or #email == authentication.principal.username")
+    @PutMapping("/email/{email}")
+    public ResponseEntity<UsuarioDTO> actualizarUsuarioPorEmail(@PathVariable String email, @RequestBody Usuario usuarioActualizado) {
+        Usuario actualizado = usuarioService.actualizarPorEmail(email, usuarioActualizado);
         return ResponseEntity.ok(convertirADTO(actualizado));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/{id}")
-    public void eliminarUsuario(@PathVariable UUID id) {
-        usuarioService.eliminarUsuario(id);
+    @PreAuthorize("hasRole('ADMIN') or #email == authentication.principal.username")
+    @DeleteMapping("/email/{email}")
+    public void eliminarUsuarioPorEmail(@PathVariable String email) {
+        usuarioService.eliminarPorEmail(email);
     }
 }
+
+

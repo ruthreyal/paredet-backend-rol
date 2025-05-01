@@ -23,6 +23,10 @@ public class UsuarioService {
         return usuarioRepository.findById(id);
     }
 
+    public Optional<Usuario> obtenerPorEmail(String email) {
+        return usuarioRepository.findByEmail(email);
+    }
+
     public Usuario guardarUsuario(Usuario usuario) {
         return usuarioRepository.save(usuario);
     }
@@ -31,8 +35,9 @@ public class UsuarioService {
         usuarioRepository.deleteById(id);
     }
 
-    public Optional<Usuario> obtenerPorEmail(String email) {
-        return usuarioRepository.findByEmail(email);
+    public void eliminarPorEmail(String email) {
+        usuarioRepository.findByEmail(email)
+                .ifPresent(usuarioRepository::delete);
     }
 
     public Usuario actualizarUsuario(UUID id, Usuario usuarioActualizado) {
@@ -50,11 +55,26 @@ public class UsuarioService {
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
     }
 
-    // Verifica si el email del token coincide con el del usuario con el ID dado
+    public Usuario actualizarPorEmail(String email, Usuario usuarioActualizado) {
+        return usuarioRepository.findByEmail(email)
+                .map(usuarioExistente -> {
+                    usuarioExistente.setNombre(usuarioActualizado.getNombre());
+                    usuarioExistente.setApellido(usuarioActualizado.getApellido());
+                    usuarioExistente.setTelefono(usuarioActualizado.getTelefono());
+                    usuarioExistente.setDireccion(usuarioActualizado.getDireccion());
+                    usuarioExistente.setCiudad(usuarioActualizado.getCiudad());
+                    usuarioExistente.setCodigoPostal(usuarioActualizado.getCodigoPostal());
+                    usuarioExistente.setPais(usuarioActualizado.getPais());
+                    return usuarioRepository.save(usuarioExistente);
+                })
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con email: " + email));
+    }
+
     public boolean esPropietario(UUID id, String email) {
         return usuarioRepository.findById(id)
                 .map(u -> u.getEmail().equalsIgnoreCase(email))
                 .orElse(false);
     }
 }
+
 

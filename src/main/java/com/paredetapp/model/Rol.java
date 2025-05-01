@@ -2,7 +2,7 @@ package com.paredetapp.model;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.UUID;
 
 @Data

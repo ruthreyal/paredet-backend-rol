@@ -21,6 +21,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -34,29 +35,25 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors().and()
-                .csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/api/auth/**", "/actuator/**", "/ping", "/error").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .anonymous() // 👈 PERO AQUÍ HAY QUE CERRAR con .and()
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
+                .csrf(csrf -> csrf.disable())
+                .cors(withDefaults()) // ✅ forma actual
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/**", "/actuator/**", "/ping", "/error").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-
 
         return http.build();
     }
 
-
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:3000")); // o añade otros dominios
+        config.setAllowedOrigins(List.of("http://localhost:3000")); // o más dominios si quieres
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
@@ -84,6 +81,7 @@ public class SecurityConfig {
         return config.getAuthenticationManager();
     }
 }
+
 
 
 

@@ -1,6 +1,6 @@
 package com.paredetapp.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import lombok.Data;
 import java.util.UUID;
 

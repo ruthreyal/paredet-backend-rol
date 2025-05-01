@@ -1,8 +1,10 @@
 package com.paredetapp.model;
 
+import jakarta.persistence.*;
 import lombok.Data;
 
-import javax.persistence.*;
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.UUID;
 
 /**
