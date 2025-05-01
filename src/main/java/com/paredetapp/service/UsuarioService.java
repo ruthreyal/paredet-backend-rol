@@ -73,7 +73,7 @@ public class UsuarioService {
                     // 👉 Nuevo: actualizar el rol si se incluye en el JSON
                     if (usuarioActualizado.getRol() != null && usuarioActualizado.getRol().getNombre() != null) {
                         rolRepository.findByNombre(usuarioActualizado.getRol().getNombre())
-                                .ifPresent(usuarioExistente::setRol); // solo si lo encuentra
+                                .ifPresent(usuarioExistente::setRol);
                     }
 
                     return usuarioRepository.save(usuarioExistente);
