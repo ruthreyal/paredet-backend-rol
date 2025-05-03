@@ -1,6 +1,6 @@
 package com.paredetapp.service;
 
-import com.paredetapp.model.Rol;
+import com.paredetapp.exception.UsuarioNoEncontradoException;
 import com.paredetapp.model.Usuario;
 import com.paredetapp.repository.RolRepository;
 import com.paredetapp.repository.UsuarioRepository;
@@ -17,7 +17,6 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final RolRepository rolRepository;
-
 
     public List<Usuario> obtenerTodos() {
         return usuarioRepository.findAll();
@@ -41,7 +40,11 @@ public class UsuarioService {
 
     public void eliminarPorEmail(String email) {
         usuarioRepository.findByEmail(email)
-                .ifPresent(usuarioRepository::delete);
+                .ifPresentOrElse(
+                        usuarioRepository::delete,
+                        () -> {
+                            throw new UsuarioNoEncontradoException("No se encontró ningún usuario con email: " + email);
+                        });
     }
 
     public Usuario actualizarUsuario(UUID id, Usuario usuarioActualizado) {
@@ -56,7 +59,7 @@ public class UsuarioService {
                     usuarioExistente.setPais(usuarioActualizado.getPais());
                     return usuarioRepository.save(usuarioExistente);
                 })
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
+                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con ID: " + id));
     }
 
     public Usuario actualizarPorEmail(String email, Usuario usuarioActualizado) {
@@ -70,9 +73,6 @@ public class UsuarioService {
                     usuarioExistente.setCodigoPostal(usuarioActualizado.getCodigoPostal());
                     usuarioExistente.setPais(usuarioActualizado.getPais());
 
-                    System.out.println("➡️ Rol recibido: " + usuarioActualizado.getRol());
-                    System.out.println("➡️ Nombre del rol: " + (usuarioActualizado.getRol() != null ? usuarioActualizado.getRol().getNombre() : "null"));
-
                     if (usuarioActualizado.getRol() != null && usuarioActualizado.getRol().getNombre() != null) {
                         rolRepository.findByNombre(usuarioActualizado.getRol().getNombre())
                                 .ifPresent(usuarioExistente::setRol);
@@ -80,7 +80,7 @@ public class UsuarioService {
 
                     return usuarioRepository.save(usuarioExistente);
                 })
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con email: " + email));
+                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con email: " + email));
     }
 
     public boolean esPropietario(UUID id, String email) {
@@ -89,5 +89,6 @@ public class UsuarioService {
                 .orElse(false);
     }
 }
+
 
 
