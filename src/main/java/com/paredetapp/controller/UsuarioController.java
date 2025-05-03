@@ -1,5 +1,7 @@
 package com.paredetapp.controller;
 
+import com.paredetapp.dto.CambiarPasswordRequest;
+import com.paredetapp.dto.UsuarioAdminDTO;
 import com.paredetapp.dto.UsuarioDTO;
 import com.paredetapp.model.Usuario;
 import com.paredetapp.service.UsuarioService;
@@ -75,11 +77,40 @@ public class UsuarioController {
         return ResponseEntity.ok(convertirADTO(actualizado));
     }
 
+    @PreAuthorize("#email == authentication.principal.username")
+    @PutMapping("/email/{email}/cambiar-password")
+    public ResponseEntity<String> cambiarPassword(
+            @PathVariable String email,
+            @RequestBody CambiarPasswordRequest request) {
+        usuarioService.cambiarPassword(email, request.getActual(), request.getNueva());
+        return ResponseEntity.ok("Contraseña actualizada correctamente");
+    }
+
+
     @PreAuthorize("hasRole('ADMIN') or #email == authentication.principal.username")
     @DeleteMapping("/email/{email}")
     public void eliminarUsuarioPorEmail(@PathVariable String email) {
         usuarioService.eliminarPorEmail(email);
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/admin")
+    public ResponseEntity<UsuarioDTO> crearUsuarioComoAdmin(@RequestBody UsuarioAdminDTO dto) {
+        Usuario creado = usuarioService.crearUsuarioComoAdmin(dto);
+        return ResponseEntity.ok(new UsuarioDTO(
+                creado.getId(),
+                creado.getNombre(),
+                creado.getApellido(),
+                creado.getEmail(),
+                creado.getTelefono(),
+                creado.getDireccion(),
+                creado.getCiudad(),
+                creado.getCodigoPostal(),
+                creado.getPais(),
+                creado.getRol().getNombre()
+        ));
+    }
+
 }
 
 

@@ -1,10 +1,12 @@
 package com.paredetapp.service;
 
+import com.paredetapp.dto.UsuarioAdminDTO;
 import com.paredetapp.exception.UsuarioNoEncontradoException;
 import com.paredetapp.model.Usuario;
 import com.paredetapp.repository.RolRepository;
 import com.paredetapp.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -88,6 +90,45 @@ public class UsuarioService {
                 .map(u -> u.getEmail().equalsIgnoreCase(email))
                 .orElse(false);
     }
+
+        private final PasswordEncoder passwordEncoder;
+
+        public void cambiarPassword(String email, String actual, String nueva) {
+            Usuario usuario = usuarioRepository.findByEmail(email)
+                    .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));
+
+            if (!passwordEncoder.matches(actual, usuario.getPassword())) {
+                throw new RuntimeException("La contraseña actual no es correcta");
+            }
+
+            usuario.setPassword(passwordEncoder.encode(nueva));
+            usuarioRepository.save(usuario);
+        }
+
+    public Usuario crearUsuarioComoAdmin(UsuarioAdminDTO dto) {
+        if (usuarioRepository.findByEmail(dto.getEmail()).isPresent()) {
+            throw new RuntimeException("Ya existe un usuario con ese email");
+        }
+
+        Usuario nuevo = new Usuario();
+        nuevo.setNombre(dto.getNombre());
+        nuevo.setApellido(dto.getApellido());
+        nuevo.setEmail(dto.getEmail());
+        nuevo.setPassword(passwordEncoder.encode(dto.getPassword()));
+        nuevo.setTelefono(dto.getTelefono());
+        nuevo.setDireccion(dto.getDireccion());
+        nuevo.setCiudad(dto.getCiudad());
+        nuevo.setCodigoPostal(dto.getCodigoPostal());
+        nuevo.setPais(dto.getPais());
+
+        nuevo.setRol(rolRepository.findByNombre(dto.getRolNombre().toUpperCase())
+                .orElseThrow(() -> new RuntimeException("Rol no válido")));
+
+        return usuarioRepository.save(nuevo);
+    }
+
+
+
 }
 
 
