@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -58,7 +60,8 @@ public class UsuarioController {
     @PreAuthorize("hasRole('ADMIN') or #email == authentication.principal.username")
     @GetMapping("/email/{email}")
     public ResponseEntity<UsuarioDTO> obtenerUsuarioPorEmail(@PathVariable String email) {
-        Optional<Usuario> usuarioOpt = usuarioService.obtenerPorEmail(email);
+        String decodedEmail = URLDecoder.decode(email, StandardCharsets.UTF_8);
+        Optional<Usuario> usuarioOpt = usuarioService.obtenerPorEmail(decodedEmail);
         return usuarioOpt.map(usuario -> ResponseEntity.ok(convertirADTO(usuario)))
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -73,7 +76,8 @@ public class UsuarioController {
     @PreAuthorize("hasRole('ADMIN') or #email == authentication.principal.username")
     @PutMapping("/email/{email}")
     public ResponseEntity<UsuarioDTO> actualizarUsuarioPorEmail(@PathVariable String email, @Valid @RequestBody Usuario usuarioActualizado) {
-        Usuario actualizado = usuarioService.actualizarPorEmail(email, usuarioActualizado);
+        String decodedEmail = URLDecoder.decode(email, StandardCharsets.UTF_8);
+        Usuario actualizado = usuarioService.actualizarPorEmail(decodedEmail, usuarioActualizado);
         return ResponseEntity.ok(convertirADTO(actualizado));
     }
 
@@ -82,15 +86,16 @@ public class UsuarioController {
     public ResponseEntity<String> cambiarPassword(
             @PathVariable String email,
             @RequestBody CambiarPasswordRequest request) {
-        usuarioService.cambiarPassword(email, request.getActual(), request.getNueva());
+        String decodedEmail = URLDecoder.decode(email, StandardCharsets.UTF_8);
+        usuarioService.cambiarPassword(decodedEmail, request.getActual(), request.getNueva());
         return ResponseEntity.ok("Contraseña actualizada correctamente");
     }
-
 
     @PreAuthorize("hasRole('ADMIN') or #email == authentication.principal.username")
     @DeleteMapping("/email/{email}")
     public void eliminarUsuarioPorEmail(@PathVariable String email) {
-        usuarioService.eliminarPorEmail(email);
+        String decodedEmail = URLDecoder.decode(email, StandardCharsets.UTF_8);
+        usuarioService.eliminarPorEmail(decodedEmail);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
@@ -110,8 +115,8 @@ public class UsuarioController {
                 creado.getRol().getNombre()
         ));
     }
-
 }
+
 
 
 
