@@ -76,10 +76,22 @@ public class UsuarioController {
     @PreAuthorize("hasRole('ADMIN') or #email == authentication.principal.username")
     @PutMapping("/email/{email}")
     public ResponseEntity<UsuarioDTO> actualizarUsuarioPorEmail(@PathVariable String email, @Valid @RequestBody Usuario usuarioActualizado) {
-        String decodedEmail = URLDecoder.decode(email, StandardCharsets.UTF_8);
-        Usuario actualizado = usuarioService.actualizarPorEmail(decodedEmail, usuarioActualizado);
-        return ResponseEntity.ok(convertirADTO(actualizado));
+        try {
+            String decodedEmail = URLDecoder.decode(email, StandardCharsets.UTF_8);
+            System.out.println("Email recibido: " + decodedEmail);
+            System.out.println("Datos recibidos para actualizar: " + usuarioActualizado);
+
+            Usuario actualizado = usuarioService.actualizarPorEmail(decodedEmail, usuarioActualizado);
+            System.out.println("Usuario actualizado correctamente");
+
+            return ResponseEntity.ok(convertirADTO(actualizado));
+        } catch (Exception e) {
+            System.err.println("Error al actualizar usuario: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
     }
+
 
     @PreAuthorize("#email == authentication.principal.username")
     @PutMapping("/email/{email}/cambiar-password")
