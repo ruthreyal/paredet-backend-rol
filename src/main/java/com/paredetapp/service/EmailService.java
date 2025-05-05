@@ -27,19 +27,20 @@ public class EmailService {
                     <div style="text-align: center;">
                         <img src='cid:logo' alt='Logo' style='width: 80px; margin-bottom: 20px;'/>
                         <h2 style="color: #c9a04d; font-family: 'Playfair Display', serif;">Recuperación de Contraseña</h2>
-                        <p style="font-size: 16px;">Haz clic en el siguiente botón para restablecer tu contraseña:</p>
-                        <a href='%s' style="display: inline-block; background-color: #c9a04d; color: white; text-decoration: none; padding: 10px 20px; margin-top: 15px; border-radius: 5px;">Restablecer contraseña</a>
+                        <p style="font-size: 16px;">Haz clic en el siguiente enlace para restablecer tu contraseña:</p>
+                        <a href='%s' style="color: #c9a04d; text-decoration: underline; word-break: break-all;">%s</a>
                         <p style="font-size: 14px; color: #777; margin-top: 20px;">Si no solicitaste este cambio, puedes ignorar este mensaje.</p>
                     </div>
                 </div>
             </div>
-        """.formatted(enlace);
+        """.formatted(enlace, enlace);
 
         helper.setText(html, true);
         helper.addInline("logo", new ClassPathResource("static/icono.png"));
         mailSender.send(mensaje);
     }
 }
+
 
 
 
