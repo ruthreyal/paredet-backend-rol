@@ -9,14 +9,13 @@ import java.util.UUID;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, UUID> {
 
-    // Buscar usuario por email (clave para login y autenticación)
     Optional<Usuario> findByEmail(String email);
 
     Optional<Usuario> findByTokenRecuperacion(String token);
 
     @Query("SELECT u FROM Usuario u JOIN FETCH u.rol WHERE u.email = :email")
     Optional<Usuario> findByEmailConRol(String email);
-
 }
+
 
 

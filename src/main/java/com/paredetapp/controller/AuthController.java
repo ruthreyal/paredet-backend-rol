@@ -1,4 +1,3 @@
-// AuthController.java
 package com.paredetapp.controller;
 
 import com.paredetapp.model.Usuario;
@@ -34,7 +33,9 @@ public class AuthController {
     public ResponseEntity<?> solicitarRecuperacion(@RequestBody Map<String, String> request) {
         String email = request.get("email");
         authService.enviarEnlaceRecuperacion(email);
-        return ResponseEntity.ok(Map.of("mensaje", "Si el email está registrado, recibirás un enlace para restablecer tu contraseña."));
+        return ResponseEntity.ok(Map.of(
+                "mensaje", "Si el email está registrado, recibirás un enlace para restablecer tu contraseña."
+        ));
     }
 
     @PostMapping("/restablecer")
@@ -42,9 +43,12 @@ public class AuthController {
         String token = request.get("token");
         String nuevaPassword = request.get("password");
         authService.restablecerPassword(token, nuevaPassword);
-        return ResponseEntity.ok(Map.of("mensaje", "Contraseña actualizada correctamente."));
+        return ResponseEntity.ok(Map.of(
+                "mensaje", "Contraseña actualizada correctamente."
+        ));
     }
 }
+
 
 
 

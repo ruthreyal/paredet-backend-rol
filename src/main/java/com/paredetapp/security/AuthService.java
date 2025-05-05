@@ -1,10 +1,10 @@
-// AuthService.java
 package com.paredetapp.security;
 
 import com.paredetapp.model.Usuario;
 import com.paredetapp.model.Rol;
 import com.paredetapp.repository.UsuarioRepository;
 import com.paredetapp.repository.RolRepository;
+import com.paredetapp.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -26,13 +25,20 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final CustomUserDetailsService userDetailsService;
+    private final EmailService emailService;
 
     public String register(Usuario request) {
         request.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        Rol rolAsignado = (request.getRol() != null && "ADMIN".equalsIgnoreCase(request.getRol().getNombre()))
-                ? rolRepository.findByNombre("ADMIN").orElseThrow(() -> new RuntimeException("Rol ADMIN no encontrado"))
-                : rolRepository.findByNombre("USER").orElseThrow(() -> new RuntimeException("Rol USER no encontrado"));
+        Rol rolAsignado;
+        if (request.getRol() != null && "ADMIN".equalsIgnoreCase(request.getRol().getNombre())) {
+            rolAsignado = rolRepository.findByNombre("ADMIN")
+                    .orElseThrow(() -> new RuntimeException("Rol ADMIN no encontrado"));
+        } else {
+            rolAsignado = rolRepository.findByNombre("USER")
+                    .orElseThrow(() -> new RuntimeException("Rol USER no encontrado"));
+        }
 
         request.setRol(rolAsignado);
         usuarioRepository.save(request);
@@ -51,22 +57,21 @@ public class AuthService {
         return jwtService.generateToken(usuario.getEmail(), usuario.getNombre(), usuario.getRol().getNombre());
     }
 
-    /**
-     * Envía un enlace de recuperación de contraseña con un token único al email del usuario (simulado por consola).
-     */
     public void enviarEnlaceRecuperacion(String email) {
-        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(email);
-        if (usuarioOpt.isPresent()) {
-            Usuario usuario = usuarioOpt.get();
-            String token = UUID.randomUUID().toString();
-            usuario.setTokenRecuperacion(token);
-            usuario.setFechaExpiracionToken(LocalDateTime.now().plusMinutes(30));
-            usuarioRepository.save(usuario);
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("No existe ningún usuario con ese email."));
 
-            // Simulación de envío de email
-            String enlace = "http://localhost:3000/restablecer-password?token=" + token;
-            System.out.println("📧 Enlace de recuperación enviado a " + email + ": " + enlace);
-        }
+        String token = UUID.randomUUID().toString();
+        usuario.setTokenRecuperacion(token);
+        usuario.setFechaExpiracionToken(LocalDateTime.now().plusMinutes(30));
+        usuarioRepository.save(usuario);
+
+        String enlace = "http://localhost:3000/restablecer-password?token=" + token;
+
+        String asunto = "Recuperación de contraseña";
+        String cuerpo = "Haz clic en el siguiente enlace para restablecer tu contraseña:\n\n" + enlace;
+
+        emailService.enviarCorreo(usuario.getEmail(), asunto, cuerpo);
     }
 
     /**
@@ -74,10 +79,10 @@ public class AuthService {
      */
     public void restablecerPassword(String token, String nuevaPassword) {
         Usuario usuario = usuarioRepository.findByTokenRecuperacion(token)
-                .orElseThrow(() -> new RuntimeException("Token no válido"));
+                .orElseThrow(() -> new RuntimeException("Token inválido o expirado"));
 
         if (usuario.getFechaExpiracionToken().isBefore(LocalDateTime.now())) {
-            throw new RuntimeException("El token ha expirado");
+            throw new RuntimeException("El token ha expirado. Solicita uno nuevo.");
         }
 
         usuario.setPassword(passwordEncoder.encode(nuevaPassword));
