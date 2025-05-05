@@ -5,6 +5,7 @@ import com.paredetapp.model.Rol;
 import com.paredetapp.repository.UsuarioRepository;
 import com.paredetapp.repository.RolRepository;
 import com.paredetapp.service.EmailService;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -68,10 +69,11 @@ public class AuthService {
 
         String enlace = "http://localhost:3000/restablecer-password?token=" + token;
 
-        String asunto = "Recuperación de contraseña";
-        String cuerpo = "Haz clic en el siguiente enlace para restablecer tu contraseña:\n\n" + enlace;
-
-        emailService.enviarCorreo(usuario.getEmail(), asunto, cuerpo);
+        try {
+            emailService.enviarCorreoHTML(usuario.getEmail(), "Recuperación de contraseña", enlace);
+        } catch (MessagingException e) {
+            throw new RuntimeException("Error al enviar el correo de recuperación", e);
+        }
     }
 
     /**
