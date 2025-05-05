@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -54,6 +55,13 @@ public class Usuario {
     @JoinColumn(name = "rol_id")
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Rol rol;
+
+    // --- Campos para recuperación de contraseña ---
+
+    private String tokenRecuperacion;
+
+    private LocalDateTime fechaExpiracionToken;
 }
+
 
 

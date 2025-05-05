@@ -1,3 +1,4 @@
+// AuthController.java
 package com.paredetapp.controller;
 
 import com.paredetapp.model.Usuario;
@@ -17,25 +18,34 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody Usuario request) {
-        System.out.println("🔧 Registro solicitado para: " + request.getEmail());
-
         String token = authService.register(request);
-
-        System.out.println("✅ Registro completado. Token generado.");
         return ResponseEntity.ok(Map.of("token", token));
     }
 
     @PostMapping(value = "/login", consumes = "application/json")
     public ResponseEntity<?> login(@RequestBody Map<String, String> request) {
-        System.out.println("✅ ENTRANDO AL MÉTODO LOGIN");
         String email = request.get("email");
         String password = request.get("password");
-        System.out.println("🔐 Email: " + email);
-        System.out.println("🔑 Password: " + password);
         String token = authService.login(email, password);
         return ResponseEntity.ok(Map.of("token", token));
     }
+
+    @PostMapping("/recuperar")
+    public ResponseEntity<?> solicitarRecuperacion(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        authService.enviarEnlaceRecuperacion(email);
+        return ResponseEntity.ok(Map.of("mensaje", "Si el email está registrado, recibirás un enlace para restablecer tu contraseña."));
+    }
+
+    @PostMapping("/restablecer")
+    public ResponseEntity<?> restablecerPassword(@RequestBody Map<String, String> request) {
+        String token = request.get("token");
+        String nuevaPassword = request.get("password");
+        authService.restablecerPassword(token, nuevaPassword);
+        return ResponseEntity.ok(Map.of("mensaje", "Contraseña actualizada correctamente."));
+    }
 }
+
 
 
 

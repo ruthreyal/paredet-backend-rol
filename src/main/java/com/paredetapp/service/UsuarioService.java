@@ -6,10 +6,14 @@ import com.paredetapp.model.Usuario;
 import com.paredetapp.repository.RolRepository;
 import com.paredetapp.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -126,8 +130,6 @@ public class UsuarioService {
 
         return usuarioRepository.save(nuevo);
     }
-
-
 
 }
 
