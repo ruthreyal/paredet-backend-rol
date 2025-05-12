@@ -110,6 +110,8 @@ public class UsuarioService {
         }
 
     public Usuario crearUsuarioComoAdmin(UsuarioAdminDTO dto) {
+        System.out.println("✉️ Registro solicitado para: " + dto.getEmail() + " con rol " + dto.getRolNombre());
+
         if (usuarioRepository.findByEmail(dto.getEmail()).isPresent()) {
             throw new RuntimeException("Ya existe un usuario con ese email");
         }
@@ -125,11 +127,17 @@ public class UsuarioService {
         nuevo.setCodigoPostal(dto.getCodigoPostal());
         nuevo.setPais(dto.getPais());
 
-        nuevo.setRol(rolRepository.findByNombre(dto.getRolNombre().toUpperCase())
-                .orElseThrow(() -> new RuntimeException("Rol no válido")));
+        var rol = rolRepository.findByNombre(dto.getRolNombre().toUpperCase())
+                .orElseThrow(() -> {
+                    System.out.println("❌ Rol no encontrado: " + dto.getRolNombre());
+                    return new RuntimeException("Rol no válido");
+                });
+
+        nuevo.setRol(rol);
 
         return usuarioRepository.save(nuevo);
     }
+
 
 }
 
