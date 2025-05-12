@@ -40,7 +40,7 @@ public class UsuarioController {
         );
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
     public List<UsuarioDTO> listarUsuarios() {
         return usuarioService.obtenerTodos()
@@ -66,7 +66,7 @@ public class UsuarioController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping
     public ResponseEntity<UsuarioDTO> crearUsuario(@Valid @RequestBody Usuario usuario) {
         Usuario creado = usuarioService.guardarUsuario(usuario);
@@ -110,7 +110,7 @@ public class UsuarioController {
         usuarioService.eliminarPorEmail(decodedEmail);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/admin")
     public ResponseEntity<UsuarioDTO> crearUsuarioComoAdmin(@RequestBody UsuarioAdminDTO dto) {
         Usuario creado = usuarioService.crearUsuarioComoAdmin(dto);
