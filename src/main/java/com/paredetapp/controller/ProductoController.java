@@ -1,13 +1,21 @@
 package com.paredetapp.controller;
 
+import com.paredetapp.dto.ProductoDTO;
+import com.paredetapp.mapper.ProductoMapper;
+import com.paredetapp.model.Categoria;
+import com.paredetapp.model.Coleccion;
 import com.paredetapp.model.Producto;
+import com.paredetapp.service.CategoriaService;
+import com.paredetapp.service.ColeccionService;
 import com.paredetapp.service.ProductoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/productos")
@@ -15,39 +23,38 @@ import java.util.UUID;
 public class ProductoController {
 
     private final ProductoService productoService;
+    private final CategoriaService categoriaService;
+    private final ColeccionService coleccionService;
 
-    /**
-     * Lista todos los productos (acceso completamente público).
-     */
     @GetMapping
-    public List<Producto> listarProductos() {
-        return productoService.obtenerTodos();
+    public List<ProductoDTO> listarProductos() {
+        return productoService.obtenerTodos()
+                .stream()
+                .map(ProductoMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
-    /**
-     * Obtiene un producto por ID (acceso completamente público).
-     */
     @GetMapping("/{id}")
-    public Optional<Producto> obtenerProducto(@PathVariable UUID id) {
-        return productoService.obtenerPorId(id);
+    public Optional<ProductoDTO> obtenerProducto(@PathVariable UUID id) {
+        return productoService.obtenerPorId(id)
+                .map(ProductoMapper::toDTO);
     }
 
-    /**
-     * Crea un nuevo producto (solo ADMIN).
-     */
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    public Producto crearProducto(@RequestBody Producto producto) {
-        return productoService.guardarProducto(producto);
+    public ProductoDTO crearProducto(@RequestBody ProductoDTO dto) {
+        Categoria categoria = categoriaService.obtenerPorId(dto.getCategoriaId());
+        Coleccion coleccion = coleccionService.obtenerPorId(dto.getColeccionId());
+        Producto producto = ProductoMapper.toEntity(dto, categoria, coleccion);
+        Producto guardado = productoService.guardarProducto(producto);
+        return ProductoMapper.toDTO(guardado);
     }
 
-    /**
-     * Elimina un producto por ID (solo ADMIN).
-     */
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public void eliminarProducto(@PathVariable UUID id) {
         productoService.eliminarProducto(id);
     }
 }
+
 

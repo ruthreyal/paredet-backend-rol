@@ -1,12 +1,16 @@
 package com.paredetapp.controller;
 
+import com.paredetapp.dto.CategoriaDTO;
+import com.paredetapp.mapper.CategoriaMapper;
 import com.paredetapp.model.Categoria;
 import com.paredetapp.service.CategoriaService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/categorias")
@@ -15,16 +19,26 @@ public class CategoriaController {
 
     private final CategoriaService categoriaService;
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping
-    public ResponseEntity<Categoria> crearCategoria(@RequestBody Categoria categoria) {
-        Categoria nueva = categoriaService.saveCategoria(categoria);
-        return ResponseEntity.ok(nueva);
+    @GetMapping
+    public List<CategoriaDTO> listarCategorias() {
+        return categoriaService.obtenerTodas()
+                .stream()
+                .map(CategoriaMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
-    @GetMapping
-    public ResponseEntity<List<Categoria>> listarCategorias() {
-        return ResponseEntity.ok(categoriaService.getAllCategorias());
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping
+    public CategoriaDTO crearCategoria(@RequestBody CategoriaDTO dto) {
+        Categoria categoria = CategoriaMapper.toEntity(dto);
+        Categoria guardada = categoriaService.guardar(categoria);
+        return CategoriaMapper.toDTO(guardada);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
+    public void eliminarCategoria(@PathVariable UUID id) {
+        categoriaService.eliminarPorId(id);
     }
 }
 

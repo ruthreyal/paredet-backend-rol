@@ -3,7 +3,6 @@ package com.paredetapp.service;
 import com.paredetapp.model.Producto;
 import com.paredetapp.repository.ProductoRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,3 +31,4 @@ public class ProductoService {
         productoRepository.deleteById(id);
     }
 }
+
