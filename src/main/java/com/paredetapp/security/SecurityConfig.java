@@ -40,7 +40,13 @@ public class SecurityConfig {
                 .cors(withDefaults())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**", "/actuator/**").permitAll()
+
+                        // Permitir a cualquier usuario acceder a productos, colecciones y categorías (solo GET)
+                        .requestMatchers(HttpMethod.GET, "/api/productos/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/categorias/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/colecciones/**").permitAll()
+
+                        // Todo lo demás requiere autenticación
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
@@ -55,7 +61,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:3000")); // agrega tu dominio frontend si es necesario
+        config.setAllowedOrigins(List.of("http://localhost:3000")); // añade aquí tu dominio desplegado si es necesario
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
@@ -83,6 +89,7 @@ public class SecurityConfig {
         return config.getAuthenticationManager();
     }
 }
+
 
 
 
