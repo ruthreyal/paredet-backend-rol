@@ -41,12 +41,22 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**", "/actuator/**").permitAll()
 
-                        // Permitir a cualquier usuario acceder a productos, colecciones y categorías (solo GET)
+                        // Públicos
                         .requestMatchers(HttpMethod.GET, "/api/productos/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/categorias/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/colecciones/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/imagenes-producto/**").permitAll()
 
-                        // Todo lo demás requiere autenticación
+                        // Favoritos (solo usuarios autenticados)
+                        .requestMatchers(HttpMethod.GET, "/api/favoritos/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/favoritos").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/favoritos").hasAnyRole("USER", "ADMIN")
+
+                        // ImagenProducto (solo admin para crear/eliminar)
+                        .requestMatchers(HttpMethod.POST, "/api/imagenes-producto").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/imagenes-producto/**").hasRole("ADMIN")
+
+                        // Cualquier otra ruta requiere autenticación
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
@@ -61,7 +71,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:3000")); // añade aquí tu dominio desplegado si es necesario
+        config.setAllowedOrigins(List.of("http://localhost:3000")); // añade aquí tu dominio de producción si lo necesitas
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
@@ -89,6 +99,7 @@ public class SecurityConfig {
         return config.getAuthenticationManager();
     }
 }
+
 
 
 
