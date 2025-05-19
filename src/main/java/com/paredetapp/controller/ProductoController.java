@@ -55,6 +55,18 @@ public class ProductoController {
     public void eliminarProducto(@PathVariable UUID id) {
         productoService.eliminarProducto(id);
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}")
+    public ProductoDTO actualizarProducto(@PathVariable UUID id, @RequestBody ProductoDTO dto) {
+        Categoria categoria = categoriaService.obtenerPorId(dto.getCategoriaId());
+        Coleccion coleccion = coleccionService.obtenerPorId(dto.getColeccionId());
+        Producto producto = ProductoMapper.toEntity(dto, categoria, coleccion);
+        producto.setId(id);  // MUY IMPORTANTE
+        Producto actualizado = productoService.guardarProducto(producto);
+        return ProductoMapper.toDTO(actualizado);
+    }
+
 }
 
 
