@@ -31,7 +31,9 @@ public class ImagenProductoController {
 
     @PostMapping
     public ImagenProductoDTO crearImagen(@RequestBody ImagenProductoDTO dto) {
-        Producto producto = productoService.obtenerPorId(dto.getProductoId());
+        Producto producto = productoService.obtenerPorId(dto.getProductoId())
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+
         ImagenProducto imagen = ImagenProductoMapper.toEntity(dto, producto);
         return ImagenProductoMapper.toDTO(imagenService.guardar(imagen));
     }
