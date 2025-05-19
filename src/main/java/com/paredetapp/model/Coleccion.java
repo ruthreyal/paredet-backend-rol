@@ -14,4 +14,11 @@ public class Coleccion {
 
     @Column(unique = true, nullable = false)
     private String nombre;
+
+    @Column(length = 500)
+    private String descripcion;
+
+    @Column(name = "imagen_url")
+    private String imagenUrl;
 }
+

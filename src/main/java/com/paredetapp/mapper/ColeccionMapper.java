@@ -9,6 +9,8 @@ public class ColeccionMapper {
         ColeccionDTO dto = new ColeccionDTO();
         dto.setId(coleccion.getId());
         dto.setNombre(coleccion.getNombre());
+        dto.setDescripcion(coleccion.getDescripcion());
+        dto.setImagenUrl(coleccion.getImagenUrl());
         return dto;
     }
 
@@ -16,6 +18,8 @@ public class ColeccionMapper {
         Coleccion coleccion = new Coleccion();
         coleccion.setId(dto.getId());
         coleccion.setNombre(dto.getNombre());
+        coleccion.setDescripcion(dto.getDescripcion());
+        coleccion.setImagenUrl(dto.getImagenUrl());
         return coleccion;
     }
 }
