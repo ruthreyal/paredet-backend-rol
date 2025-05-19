@@ -40,6 +40,16 @@ public class ColeccionController {
     public void eliminarColeccion(@PathVariable UUID id) {
         coleccionService.eliminarPorId(id);
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}")
+    public ColeccionDTO actualizarColeccion(@PathVariable UUID id, @RequestBody ColeccionDTO dto) {
+        Coleccion coleccion = coleccionService.obtenerPorId(id);
+        coleccion.setNombre(dto.getNombre());
+        Coleccion actualizada = coleccionService.guardar(coleccion);
+        return ColeccionMapper.toDTO(actualizada);
+    }
+
 }
 
 
