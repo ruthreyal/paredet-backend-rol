@@ -40,6 +40,16 @@ public class CategoriaController {
     public void eliminarCategoria(@PathVariable UUID id) {
         categoriaService.eliminarPorId(id);
     }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{id}")
+    public CategoriaDTO actualizarCategoria(@PathVariable UUID id, @RequestBody CategoriaDTO dto) {
+        Categoria categoria = categoriaService.obtenerPorId(id);
+        categoria.setNombre(dto.getNombre());
+        Categoria actualizada = categoriaService.guardar(categoria);
+        return CategoriaMapper.toDTO(actualizada);
+    }
+
 }
 
 
