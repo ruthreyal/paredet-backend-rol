@@ -40,6 +40,12 @@ public class UsuarioController {
         );
     }
 
+    @GetMapping("/email-existe")
+    public ResponseEntity<Boolean> emailExiste(@RequestParam String email) {
+        boolean existe = usuarioService.emailYaExiste(email);
+        return ResponseEntity.ok(existe);
+    }
+
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public List<UsuarioDTO> listarUsuarios() {

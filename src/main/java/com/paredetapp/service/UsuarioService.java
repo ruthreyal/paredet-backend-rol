@@ -89,6 +89,10 @@ public class UsuarioService {
                 .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado con email: " + email));
     }
 
+    public boolean emailYaExiste(String email) {
+        return usuarioRepository.existsByEmail(email);
+    }
+
     public boolean esPropietario(UUID id, String email) {
         return usuarioRepository.findById(id)
                 .map(u -> u.getEmail().equalsIgnoreCase(email))
