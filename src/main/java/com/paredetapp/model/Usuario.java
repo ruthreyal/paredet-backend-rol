@@ -43,12 +43,16 @@ public class Usuario {
     @Column(unique = true, nullable = false)
     private String telefono;
 
+    @Size(max = 100)
     private String direccion;
+
+    @Size(max = 50)
     private String ciudad;
 
     @Size(max = 10)
     private String codigoPostal;
 
+    @Size(max = 50)
     private String pais;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -56,6 +60,7 @@ public class Usuario {
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Rol rol;
 
+    @Size(max = 255)
     private String tokenRecuperacion;
     private LocalDateTime fechaExpiracionToken;
 }
