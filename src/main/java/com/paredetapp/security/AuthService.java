@@ -12,6 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -28,6 +29,8 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final CustomUserDetailsService userDetailsService;
     private final EmailService emailService;
+    @Value("${frontend.url}")
+    private String frontendUrl;
 
     public String register(Usuario request) {
         request.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -67,7 +70,8 @@ public class AuthService {
         usuario.setFechaExpiracionToken(LocalDateTime.now().plusMinutes(30));
         usuarioRepository.save(usuario);
 
-        String enlace = "http://localhost:3000/restablecer-password?token=" + token;
+        String enlace = frontendUrl + "/restablecer-password?token=" + token;
+
 
         try {
             emailService.enviarCorreoHTML(usuario.getEmail(), "Recuperación de contraseña", enlace);
