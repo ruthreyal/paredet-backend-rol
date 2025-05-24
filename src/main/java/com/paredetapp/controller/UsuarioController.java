@@ -56,7 +56,7 @@ public class UsuarioController {
         return ResponseEntity.ok(existe);
     }
 
-    @PutMapping("/usuarios/cambiar-email")
+    @PutMapping("/cambiar-email")
     public ResponseEntity<?> cambiarEmail(
             @RequestBody Map<String, String> payload,
             @RequestHeader("Authorization") String token
