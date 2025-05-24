@@ -4,16 +4,20 @@ import com.paredetapp.dto.CambiarPasswordRequest;
 import com.paredetapp.dto.UsuarioAdminDTO;
 import com.paredetapp.dto.UsuarioDTO;
 import com.paredetapp.model.Usuario;
+import com.paredetapp.repository.UsuarioRepository;
 import com.paredetapp.service.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -24,6 +28,12 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioService usuarioService;
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+
 
     private UsuarioDTO convertirADTO(Usuario usuario) {
         return new UsuarioDTO(
@@ -45,6 +55,41 @@ public class UsuarioController {
         boolean existe = usuarioService.emailYaExiste(email);
         return ResponseEntity.ok(existe);
     }
+
+    @PutMapping("/usuarios/cambiar-email")
+    public ResponseEntity<?> cambiarEmail(
+            @RequestBody Map<String, String> payload,
+            @RequestHeader("Authorization") String token
+    ) {
+        String emailActual = payload.get("emailActual");
+        String nuevoEmail = payload.get("nuevoEmail");
+        String password = payload.get("password");
+
+        if (emailActual == null || nuevoEmail == null || password == null) {
+            return ResponseEntity.badRequest().body("Faltan campos obligatorios");
+        }
+
+        // Comprobamos si el nuevo email ya existe
+        if (usuarioRepository.findByEmail(nuevoEmail).isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("El nuevo email ya está registrado");
+        }
+
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByEmail(emailActual);
+        if (usuarioOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario no encontrado");
+        }
+
+        Usuario usuario = usuarioOpt.get();
+        if (!passwordEncoder.matches(password, usuario.getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Contraseña incorrecta");
+        }
+
+        usuario.setEmail(nuevoEmail);
+        usuarioRepository.save(usuario);
+
+        return ResponseEntity.ok("Email actualizado correctamente. Por favor, vuelve a iniciar sesión.");
+    }
+
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
