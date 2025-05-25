@@ -43,8 +43,17 @@ public class ProductoController {
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ProductoDTO crearProducto(@RequestBody ProductoDTO dto) {
-        Categoria categoria = categoriaService.obtenerPorId(dto.getCategoriaId());
-        Coleccion coleccion = coleccionService.obtenerPorId(dto.getColeccionId());
+        Categoria categoria = null;
+        Coleccion coleccion = null;
+
+        if (dto.getCategoriaId() != null) {
+            categoria = categoriaService.obtenerPorId(dto.getCategoriaId());
+        }
+
+        if (dto.getColeccionId() != null) {
+            coleccion = coleccionService.obtenerPorId(dto.getColeccionId());
+        }
+
         Producto producto = ProductoMapper.toEntity(dto, categoria, coleccion);
         Producto guardado = productoService.guardarProducto(producto);
         return ProductoMapper.toDTO(guardado);
@@ -59,13 +68,23 @@ public class ProductoController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ProductoDTO actualizarProducto(@PathVariable UUID id, @RequestBody ProductoDTO dto) {
-        Categoria categoria = categoriaService.obtenerPorId(dto.getCategoriaId());
-        Coleccion coleccion = coleccionService.obtenerPorId(dto.getColeccionId());
+        Categoria categoria = null;
+        Coleccion coleccion = null;
+
+        if (dto.getCategoriaId() != null) {
+            categoria = categoriaService.obtenerPorId(dto.getCategoriaId());
+        }
+
+        if (dto.getColeccionId() != null) {
+            coleccion = coleccionService.obtenerPorId(dto.getColeccionId());
+        }
+
         Producto producto = ProductoMapper.toEntity(dto, categoria, coleccion);
-        producto.setId(id);  // MUY IMPORTANTE
+        producto.setId(id);
         Producto actualizado = productoService.guardarProducto(producto);
         return ProductoMapper.toDTO(actualizado);
     }
+
 
 }
 
