@@ -10,7 +10,7 @@ import java.util.UUID;
 @Table(
         name = "productos",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"nombre"}) // nombre único
+                @UniqueConstraint(columnNames = {"nombre"})
         }
 )
 public class Producto {
