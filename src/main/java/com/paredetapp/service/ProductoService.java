@@ -30,5 +30,14 @@ public class ProductoService {
     public void eliminarProducto(UUID id) {
         productoRepository.deleteById(id);
     }
+
+    public boolean nombreExiste(String nombre) {
+        return productoRepository.existsByNombre(nombre);
+    }
+
+    public boolean referenciaExiste(String referencia) {
+        return productoRepository.existsByReferencia(referencia);
+    }
+
 }
 

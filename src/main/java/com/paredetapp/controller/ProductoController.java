@@ -85,6 +85,17 @@ public class ProductoController {
         return ProductoMapper.toDTO(actualizado);
     }
 
+    @GetMapping("/existe-nombre")
+    public boolean comprobarNombre(@RequestParam String nombre) {
+        return productoService.nombreExiste(nombre);
+    }
+
+    @GetMapping("/existe-referencia")
+    public boolean comprobarReferencia(@RequestParam String referencia) {
+        return productoService.referenciaExiste(referencia);
+    }
+
+
 
 }
 
