@@ -40,7 +40,7 @@ public class Usuario {
 
     @NotBlank
     @Pattern(regexp = "\\d{9}")
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String telefono;
 
     @Size(max = 100)
