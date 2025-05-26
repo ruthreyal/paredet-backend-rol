@@ -31,12 +31,20 @@ public class AuthController {
 
     @PostMapping("/recuperar")
     public ResponseEntity<?> solicitarRecuperacion(@RequestBody Map<String, String> request) {
-        String email = request.get("email");
-        authService.enviarEnlaceRecuperacion(email);
-        return ResponseEntity.ok(Map.of(
-                "mensaje", "Si el email está registrado, recibirás un enlace para restablecer tu contraseña."
-        ));
+        try {
+            String email = request.get("email");
+            authService.enviarEnlaceRecuperacion(email);
+            return ResponseEntity.ok(Map.of(
+                    "mensaje", "Si el email está registrado, recibirás un enlace para restablecer tu contraseña."
+            ));
+        } catch (Exception e) {
+            e.printStackTrace(); // 👈 asegúrate de ver el error en Railway logs
+            return ResponseEntity.status(500).body(Map.of(
+                    "error", "Error al procesar la recuperación de contraseña."
+            ));
+        }
     }
+
 
     @PostMapping("/restablecer")
     public ResponseEntity<?> restablecerPassword(@RequestBody Map<String, String> request) {
