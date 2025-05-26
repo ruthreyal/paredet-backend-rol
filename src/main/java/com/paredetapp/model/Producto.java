@@ -51,11 +51,11 @@ public class Producto {
     private String familia;
 
     @ManyToOne
-    @JoinColumn(name = "categoria_id")
+    @JoinColumn(nullable = false, name = "categoria_id")
     private Categoria categoria;
 
     @ManyToOne
-    @JoinColumn(name = "coleccion_id")
+    @JoinColumn(nullable = false, name = "coleccion_id")
     private Coleccion coleccion;
 }
 
