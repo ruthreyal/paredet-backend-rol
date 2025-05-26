@@ -35,15 +35,21 @@ public class AuthController {
             String email = request.get("email");
             authService.enviarEnlaceRecuperacion(email);
             return ResponseEntity.ok(Map.of(
-                    "mensaje", "Si el email está registrado, recibirás un enlace para restablecer tu contraseña."
+                    "mensaje", "Enlace enviado"
+            ));
+        } catch (RuntimeException e) {
+            // Esta excepción es la del "usuario no encontrado"
+            return ResponseEntity.badRequest().body(Map.of(
+                    "error", e.getMessage()
             ));
         } catch (Exception e) {
-            e.printStackTrace(); // 👈 asegúrate de ver el error en Railway logs
+            e.printStackTrace();
             return ResponseEntity.status(500).body(Map.of(
-                    "error", "Error al procesar la recuperación de contraseña."
+                    "error", "Error interno al enviar el correo"
             ));
         }
     }
+
 
 
     @PostMapping("/restablecer")
