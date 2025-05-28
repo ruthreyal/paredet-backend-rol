@@ -47,7 +47,13 @@ public class AuthService {
         request.setRol(rolAsignado);
         usuarioRepository.save(request);
 
-        return jwtService.generateToken(request.getEmail(), request.getNombre(), rolAsignado.getNombre());
+        return jwtService.generateToken(
+                request.getId().toString(),
+                request.getEmail(),
+                request.getNombre(),
+                rolAsignado.getNombre()
+        );
+
     }
 
     public String login(String email, String password) {
@@ -58,7 +64,12 @@ public class AuthService {
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        return jwtService.generateToken(usuario.getEmail(), usuario.getNombre(), usuario.getRol().getNombre());
+        return jwtService.generateToken(
+                usuario.getId().toString(),
+                usuario.getEmail(),
+                usuario.getNombre(),
+                usuario.getRol().getNombre()
+        );
     }
 
     public void enviarEnlaceRecuperacion(String email) {

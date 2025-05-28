@@ -33,11 +33,9 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    /**
-     * Genera un token con claims personalizados: nombre y rol
-     */
-    public String generateToken(String email, String nombre, String rol) {
+    public String generateToken(String id, String email, String nombre, String rol) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("id", id);
         claims.put("nombre", nombre);
         claims.put("rol", rol);
         return createToken(claims, email);
