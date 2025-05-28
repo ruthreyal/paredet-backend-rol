@@ -9,6 +9,7 @@ import com.paredetapp.service.FavoritoService;
 import com.paredetapp.service.ProductoService;
 import com.paredetapp.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,8 +45,10 @@ public class FavoritoController {
     }
 
 
-    @DeleteMapping
-    public void eliminarFavorito(@RequestParam UUID usuarioId, @RequestParam UUID productoId) {
-        favoritoService.eliminar(usuarioId, productoId);
+    @PostMapping("/eliminar")
+    public ResponseEntity<?> eliminarFavorito(@RequestBody FavoritoDTO dto) {
+        favoritoService.eliminar(dto.getUsuarioId(), dto.getProductoId());
+        return ResponseEntity.ok().build();
     }
+
 }
