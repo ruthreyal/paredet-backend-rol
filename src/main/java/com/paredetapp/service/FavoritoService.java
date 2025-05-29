@@ -4,6 +4,7 @@ import com.paredetapp.model.Favorito;
 import com.paredetapp.repository.FavoritoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -26,6 +27,7 @@ public class FavoritoService {
         return favoritoRepository.save(favorito);
     }
 
+    @Transactional
     public void eliminar(UUID usuarioId, UUID productoId) {
         favoritoRepository.deleteByUsuarioIdAndProductoId(usuarioId, productoId);
     }
