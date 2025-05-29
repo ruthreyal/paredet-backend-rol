@@ -44,7 +44,7 @@ public class FavoritoController {
         return FavoritoMapper.toDTO(favoritoService.guardar(favorito));
     }
 
-
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     @PostMapping("/eliminar")
     public ResponseEntity<?> eliminarFavorito(@RequestBody FavoritoDTO dto) {
         favoritoService.eliminar(dto.getUsuarioId(), dto.getProductoId());
