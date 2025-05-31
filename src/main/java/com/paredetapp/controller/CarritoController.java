@@ -18,7 +18,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/carritos")
+@RequestMapping("/api/carrito")
 @RequiredArgsConstructor
 public class CarritoController {
 
