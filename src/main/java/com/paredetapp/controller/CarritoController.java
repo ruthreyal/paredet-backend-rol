@@ -1,8 +1,13 @@
 package com.paredetapp.controller;
 
+import com.paredetapp.dto.AddToCartRequest;
 import com.paredetapp.model.Carrito;
+import com.paredetapp.model.Usuario;
 import com.paredetapp.service.CarritoService;
+import com.paredetapp.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +23,8 @@ import java.util.UUID;
 public class CarritoController {
 
     private final CarritoService carritoService;
+    @Autowired
+    private UsuarioService usuarioService;
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
@@ -45,6 +52,21 @@ public class CarritoController {
     public void eliminarCarrito(@PathVariable UUID id) {
         carritoService.eliminarCarrito(id);
     }
+
+    @PostMapping("/add")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<String> agregarAlCarrito(
+            @RequestBody AddToCartRequest request,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        Usuario usuario = usuarioService.obtenerPorEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        carritoService.agregarAlCarrito(usuario.getId(), request.getProductoId(), request.getCantidad());
+
+        return ResponseEntity.ok("Producto añadido al carrito");
+    }
+
 }
 
 
