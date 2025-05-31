@@ -47,11 +47,20 @@ public class CarritoController {
         return carritoService.guardarCarrito(carrito);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER')")
     @DeleteMapping("/{id}")
-    public void eliminarCarrito(@PathVariable UUID id) {
-        carritoService.eliminarCarrito(id);
+    public ResponseEntity<String> eliminarProductoDelCarrito(
+            @PathVariable UUID id,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        Usuario usuario = usuarioService.obtenerPorEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        carritoService.eliminarCarritoPorUsuario(id, usuario.getId());
+
+        return ResponseEntity.ok("Producto eliminado del carrito");
     }
+
 
     @PostMapping("/add")
     @PreAuthorize("hasRole('USER')")
@@ -75,6 +84,20 @@ public class CarritoController {
         return carritoService.obtenerPorUsuario(usuario.getId());
     }
 
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<String> actualizarCantidad(
+            @PathVariable UUID id,
+            @RequestBody Carrito carritoActualizado,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        Usuario usuario = usuarioService.obtenerPorEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        carritoService.actualizarCantidad(id, carritoActualizado.getCantidad(), usuario.getId());
+
+        return ResponseEntity.ok("Cantidad actualizada");
+    }
 
 }
 

@@ -80,6 +80,29 @@ public class CarritoService {
         return carritoRepository.findByUsuario_Id(usuarioId);
     }
 
+    public void actualizarCantidad(UUID carritoId, int nuevaCantidad, UUID usuarioId) {
+        Carrito carrito = carritoRepository.findById(carritoId)
+                .orElseThrow(() -> new RuntimeException("Carrito no encontrado"));
+
+        if (!carrito.getUsuarioId().equals(usuarioId)) {
+            throw new SecurityException("No autorizado");
+        }
+
+        carrito.setCantidad(nuevaCantidad);
+        carritoRepository.save(carrito);
+    }
+
+    public void eliminarCarritoPorUsuario(UUID carritoId, UUID usuarioId) {
+        Carrito carrito = carritoRepository.findById(carritoId)
+                .orElseThrow(() -> new RuntimeException("Carrito no encontrado"));
+
+        if (!carrito.getUsuarioId().equals(usuarioId)) {
+            throw new SecurityException("No autorizado para eliminar este carrito");
+        }
+
+        carritoRepository.deleteById(carritoId);
+    }
+
 
 }
 
