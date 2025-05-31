@@ -1,11 +1,17 @@
 package com.paredetapp.service;
 
 import com.paredetapp.model.Pedido;
+import com.paredetapp.model.Usuario;
 import com.paredetapp.repository.PedidoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.paredetapp.model.Carrito;
+import com.paredetapp.repository.CarritoRepository;
 
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -15,6 +21,8 @@ import java.util.UUID;
 public class PedidoService {
 
     private final PedidoRepository pedidoRepository;
+    private final CarritoRepository carritoRepository;
+
 
     public List<Pedido> obtenerTodos() {
         return pedidoRepository.findAll();
@@ -38,4 +46,34 @@ public class PedidoService {
     public void eliminarPedido(UUID id) {
         pedidoRepository.deleteById(id);
     }
+
+    public void realizarPedidoDesdeCarrito(Usuario usuario) {
+        // Obtener productos del carrito
+        List<Carrito> carritoItems = carritoRepository.findByUsuario_Id(usuario.getId());
+
+        if (carritoItems.isEmpty()) {
+            throw new RuntimeException("El carrito está vacío");
+        }
+
+        // Crear nuevo pedido
+        Pedido pedido = new Pedido();
+        pedido.setUsuario(usuario);
+        pedido.setFechaCreacion(LocalDateTime.now());
+
+
+        double total = carritoItems.stream()
+                .mapToDouble(item -> item.getProducto().getPrecio() * item.getCantidad())
+                .sum();
+        pedido.setTotal(total);
+
+        // Asignar productos del carrito al pedido (adaptar según tu modelo si lo necesitas)
+        // pedido.setLineas(...); ← esto depende de cómo tengas definidos los productos en el pedido
+
+        pedidoRepository.save(pedido);
+
+        // Vaciar carrito
+        carritoRepository.deleteByUsuario(usuario);
+    }
+
+
 }

@@ -1,9 +1,16 @@
 package com.paredetapp.controller;
 
 import com.paredetapp.model.Pedido;
+import com.paredetapp.model.Usuario;
+import com.paredetapp.service.CarritoService;
 import com.paredetapp.service.PedidoService;
+import com.paredetapp.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +23,11 @@ import java.util.UUID;
 public class PedidoController {
 
     private final PedidoService pedidoService;
+    @Autowired
+    private UsuarioService usuarioService;
+
+    @Autowired
+    private CarritoService carritoService;
 
     /**
      * Solo ADMIN puede ver todos los pedidos.
@@ -52,6 +64,18 @@ public class PedidoController {
     public Pedido guardarPedido(@RequestBody Pedido pedido) {
         return pedidoService.guardarPedido(pedido);
     }
+
+    @PreAuthorize("hasRole('USER')")
+    @PostMapping("/finalizar")
+    public ResponseEntity<String> realizarPedido(@AuthenticationPrincipal UserDetails userDetails) {
+        Usuario usuario = usuarioService.obtenerPorEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        pedidoService.realizarPedidoDesdeCarrito(usuario);
+
+        return ResponseEntity.ok("Pedido realizado con éxito");
+    }
+
 }
 
 
