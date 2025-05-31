@@ -3,6 +3,7 @@ package com.paredetapp.service;
 import com.paredetapp.model.Pedido;
 import com.paredetapp.model.Usuario;
 import com.paredetapp.repository.PedidoRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,6 +48,7 @@ public class PedidoService {
         pedidoRepository.deleteById(id);
     }
 
+    @Transactional
     public void realizarPedidoDesdeCarrito(Usuario usuario) {
         // Obtener productos del carrito
         List<Carrito> carritoItems = carritoRepository.findByUsuario_Id(usuario.getId());
