@@ -74,5 +74,8 @@ public class PedidoService {
         carritoRepository.deleteByUsuario(usuario);
     }
 
+    public List<Pedido> obtenerPorUsuarioId(UUID usuarioId) {
+        return pedidoRepository.findByUsuario_Id(usuarioId);
+    }
 
 }

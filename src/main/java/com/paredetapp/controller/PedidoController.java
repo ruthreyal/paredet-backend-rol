@@ -86,6 +86,16 @@ public class PedidoController {
         return ResponseEntity.ok("Pedido realizado correctamente");
     }
 
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/mios")
+    public ResponseEntity<List<Pedido>> obtenerPedidosDelUsuario(@AuthenticationPrincipal UserDetails userDetails) {
+        Usuario usuario = usuarioService.obtenerPorEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        List<Pedido> pedidos = pedidoService.obtenerPorUsuarioId(usuario.getId());
+        return ResponseEntity.ok(pedidos);
+    }
+
 
 }
 
