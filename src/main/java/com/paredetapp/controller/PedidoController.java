@@ -76,6 +76,17 @@ public class PedidoController {
         return ResponseEntity.ok("Pedido realizado con éxito");
     }
 
+    @PreAuthorize("hasRole('USER')")
+    @PostMapping("/realizar")
+    public ResponseEntity<String> realizarPedidoDesdeCarrito(@AuthenticationPrincipal UserDetails userDetails) {
+        Usuario usuario = usuarioService.obtenerPorEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        pedidoService.realizarPedidoDesdeCarrito(usuario);
+        return ResponseEntity.ok("Pedido realizado correctamente");
+    }
+
+
 }
 
 
