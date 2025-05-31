@@ -59,15 +59,12 @@ public class PedidoService {
         Pedido pedido = new Pedido();
         pedido.setUsuario(usuario);
         pedido.setFechaCreacion(LocalDateTime.now());
-
+        pedido.setEstado("PENDIENTE");
 
         double total = carritoItems.stream()
                 .mapToDouble(item -> item.getProducto().getPrecio() * item.getCantidad())
                 .sum();
         pedido.setTotal(total);
-
-        // Asignar productos del carrito al pedido (adaptar según tu modelo si lo necesitas)
-        // pedido.setLineas(...); ← esto depende de cómo tengas definidos los productos en el pedido
 
         pedidoRepository.save(pedido);
 
