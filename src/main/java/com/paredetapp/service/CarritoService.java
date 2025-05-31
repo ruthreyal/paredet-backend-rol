@@ -76,6 +76,11 @@ public class CarritoService {
         }
     }
 
+    public List<Carrito> obtenerPorUsuario(UUID usuarioId) {
+        return carritoRepository.findByUsuario_Id(usuarioId);
+    }
+
+
 }
 
 

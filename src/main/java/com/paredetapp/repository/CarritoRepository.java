@@ -12,5 +12,10 @@ import java.util.UUID;
 public interface CarritoRepository extends JpaRepository<Carrito, UUID> {
     List<Carrito> findByUsuario_Id(UUID usuarioId);
     Optional<Carrito> findByUsuarioAndProducto(Usuario usuario, Producto producto);
+
+    // Opcionales para funcionalidad completa:
+    void deleteByUsuarioAndProducto(Usuario usuario, Producto producto);
+    void deleteByUsuario(Usuario usuario);
 }
+
 

@@ -67,6 +67,15 @@ public class CarritoController {
         return ResponseEntity.ok("Producto añadido al carrito");
     }
 
+    @PreAuthorize("hasRole('USER')")
+    @GetMapping("/usuario")
+    public List<Carrito> obtenerCarritosUsuario(@AuthenticationPrincipal UserDetails userDetails) {
+        Usuario usuario = usuarioService.obtenerPorEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        return carritoService.obtenerPorUsuario(usuario.getId());
+    }
+
+
 }
 
 
