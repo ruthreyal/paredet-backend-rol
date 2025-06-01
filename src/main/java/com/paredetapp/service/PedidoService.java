@@ -78,4 +78,9 @@ public class PedidoService {
         return pedidoRepository.findByUsuario_Id(usuarioId);
     }
 
+    public double obtenerVentasDelMesActual() {
+        return Optional.ofNullable(pedidoRepository.obtenerTotalVentasMesActual()).orElse(0.0);
+    }
+
+
 }

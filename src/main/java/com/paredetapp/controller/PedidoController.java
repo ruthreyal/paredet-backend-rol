@@ -96,6 +96,12 @@ public class PedidoController {
         return ResponseEntity.ok(pedidos);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/ventas/mes-actual")
+    public ResponseEntity<Double> getVentasMesActual() {
+        return ResponseEntity.ok(pedidoService.obtenerVentasDelMesActual());
+    }
+
 
 }
 
