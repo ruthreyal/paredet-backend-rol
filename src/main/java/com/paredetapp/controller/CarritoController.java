@@ -26,11 +26,6 @@ public class CarritoController {
     @Autowired
     private UsuarioService usuarioService;
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping
-    public List<Carrito> listarCarritos() {
-        return carritoService.obtenerTodos();
-    }
 
     @PreAuthorize("hasRole('ADMIN') or @carritoService.esPropietario(#id, #principal.username)")
     @GetMapping("/{id}")
@@ -76,7 +71,7 @@ public class CarritoController {
         return ResponseEntity.ok("Producto añadido al carrito");
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("/usuario")
     public List<Carrito> obtenerCarritosUsuario(@AuthenticationPrincipal UserDetails userDetails) {
         Usuario usuario = usuarioService.obtenerPorEmail(userDetails.getUsername())
