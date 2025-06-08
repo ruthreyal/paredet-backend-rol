@@ -1,10 +1,10 @@
-# 📌 Endpoints de la API – ParedetApp
+# Endpoints de la API – ParedetApp
 
 Este documento contiene un resumen de los endpoints disponibles en la API del backend de ParedetApp, organizados por entidad y con su nivel de acceso.
 
 ---
 
-## 🔐 Autenticación
+## Autenticación
 
 | Método | Endpoint              | Descripción                | Público / Protegido |
 |--------|-----------------------|----------------------------|---------------------|
@@ -13,7 +13,7 @@ Este documento contiene un resumen de los endpoints disponibles en la API del ba
 
 ---
 
-## 👤 Usuarios
+## Usuarios
 
 | Método | Endpoint                      | Descripción                         | Rol requerido          |
 |--------|-------------------------------|-------------------------------------|------------------------|
@@ -26,7 +26,7 @@ Este documento contiene un resumen de los endpoints disponibles en la API del ba
 
 ---
 
-## 🛒 Carritos
+## Carritos
 
 | Método | Endpoint                 | Descripción               | Rol requerido          |
 |--------|--------------------------|---------------------------|------------------------|
@@ -37,7 +37,7 @@ Este documento contiene un resumen de los endpoints disponibles en la API del ba
 
 ---
 
-## 📦 Productos
+## Productos
 
 | Método | Endpoint               | Descripción                | Rol requerido        |
 |--------|------------------------|----------------------------|----------------------|
@@ -48,7 +48,7 @@ Este documento contiene un resumen de los endpoints disponibles en la API del ba
 
 ---
 
-## 🧩 Categorías
+## Categorías
 
 | Método | Endpoint            | Descripción              | Rol requerido        |
 |--------|---------------------|--------------------------|----------------------|
@@ -57,7 +57,7 @@ Este documento contiene un resumen de los endpoints disponibles en la API del ba
 
 ---
 
-## 🎨 Colecciones
+## Colecciones
 
 | Método | Endpoint                  | Descripción                | Rol requerido        |
 |--------|---------------------------|----------------------------|----------------------|
@@ -68,7 +68,7 @@ Este documento contiene un resumen de los endpoints disponibles en la API del ba
 
 ---
 
-## 🧭 Direcciones
+## Direcciones
 
 | Método | Endpoint                  | Descripción                  | Rol requerido        |
 |--------|---------------------------|------------------------------|----------------------|
@@ -79,7 +79,7 @@ Este documento contiene un resumen de los endpoints disponibles en la API del ba
 
 ---
 
-## ⭐ Favoritos
+## Favoritos
 
 | Método | Endpoint                                 | Descripción                        | Rol requerido        |
 |--------|------------------------------------------|------------------------------------|----------------------|
@@ -89,7 +89,7 @@ Este documento contiene un resumen de los endpoints disponibles en la API del ba
 
 ---
 
-## 📦 Pedidos
+## Pedidos
 
 | Método | Endpoint            | Descripción              | Rol requerido        |
 |--------|---------------------|--------------------------|----------------------|
