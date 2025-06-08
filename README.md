@@ -19,11 +19,3 @@ Este proyecto corresponde al backend de **Paredet**, una tienda online especiali
 - PostgreSQL (en local o remoto)
 - Docker (opcional)
 
-## Configuración
-
-Crea un archivo `application.properties` con las siguientes variables de entorno (o configúralas en Railway):
-
-```properties
-SPRING_DATASOURCE_URL=jdbc:postgresql://<host>:<port>/<dbname>
-SPRING_DATASOURCE_USERNAME=postgres
-SPRING_DATASOURCE_PASSWORD=tu_password
