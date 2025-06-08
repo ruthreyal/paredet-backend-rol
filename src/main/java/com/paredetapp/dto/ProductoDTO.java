@@ -1,5 +1,6 @@
 package com.paredetapp.dto;
 
+import java.util.Date;
 import java.util.UUID;
 import lombok.Data;
 
@@ -19,5 +20,7 @@ public class ProductoDTO {
     private String familia;
     private UUID categoriaId;
     private UUID coleccionId;
+    private Date fechaCreacion;
+
 }
 

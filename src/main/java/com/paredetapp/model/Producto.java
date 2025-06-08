@@ -3,6 +3,7 @@ package com.paredetapp.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Data
@@ -57,5 +58,13 @@ public class Producto {
     @ManyToOne
     @JoinColumn(nullable = false, name = "coleccion_id")
     private Coleccion coleccion;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "fecha_creacion", nullable = false, updatable = false)
+    private Date fechaCreacion;
+
+    @PrePersist
+    protected void onCreate() {
+        this.fechaCreacion = new Date();
+    }
 }
 

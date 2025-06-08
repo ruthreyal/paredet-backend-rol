@@ -23,6 +23,7 @@ public class ProductoMapper {
         dto.setFamilia(producto.getFamilia());
         dto.setCategoriaId(producto.getCategoria() != null ? producto.getCategoria().getId() : null);
         dto.setColeccionId(producto.getColeccion() != null ? producto.getColeccion().getId() : null);
+        dto.setFechaCreacion(producto.getFechaCreacion());
         return dto;
     }
 
